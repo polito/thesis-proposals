@@ -6144,3 +6144,22 @@ INSERT INTO
     logged_student (student_id)
 VALUES
     (320213);
+
+-- ------------------------------------------------------------
+-- ↓ companies table ↓
+-- ------------------------------------------------------------
+INSERT INTO
+    companies (name, address)
+VALUES
+    ("Reply S.p.A.", "Via Dante, 14, 10123 Torino TO, Italy"),
+    ("Stellantis N.V.", "Viale Ciro Menotti, 322, 10128 Torino TO, Italy"),
+    ("Comau S.p.A.", "Via Rivalta, 30, 10095 Grugliasco TO, Italy"),
+    ("Leonardo S.p.A.", "Via Giovanni Agnelli, 200, 10135 Torino TO, Italy"),
+    ("Thales Alenia Space Italia S.p.A.", "Via Saccomuro, 24, 10135 Torino TO, Italy"),
+    ("Politecnico di Torino", "Corso Duca degli Abruzzi, 24, 10129 Torino TO, Italy"),
+    ("Pirelli & C. S.p.A.", "Viale Piero e Alberto Pirelli, 25, 20126 Milano MI, Italy"),
+    ("ENI S.p.A.", "Piazza Ezio Vanoni, 1, 20097 San Donato Milanese MI, Italy"),
+    ("IBM Italia S.p.A.", "Via Tolmezzo, 15, 20132 Milano MI, Italy"),
+    ("Accenture S.p.A.", "Via Giovanni Battista Pirelli, 39, 20124 Milano MI, Italy"),
+    ("Istituto Italiano di Tecnologia", "Via Morego, 30, 16163 Genova GE, Italy");
+-- ------------------------------------------------------------

@@ -27,6 +27,7 @@ DROP TABLE IF EXISTS student;
 DROP TABLE IF EXISTS degree_programme;
 DROP TABLE IF EXISTS degree_programme_container;
 DROP TABLE IF EXISTS collegio;
+DROP TABLE IF EXISTS thesis_application;
 
 -- Table for storing collegi data
 CREATE TABLE IF NOT EXISTS collegio (
@@ -156,6 +157,39 @@ CREATE TABLE IF NOT EXISTS logged_student (
     student_id VARCHAR(6) PRIMARY KEY,
     FOREIGN KEY (student_id) REFERENCES student(id) ON DELETE CASCADE
 );
+
+-- Table for storing thesis applications
+CREATE TABLE IF NOT EXISTS thesis_application (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    student_id VARCHAR(6) NOT NULL REFERENCES student(id),
+    thesis_proposal_id INT REFERENCES thesis_proposal(id),
+    topic VARCHAR(255) NOT NULL,
+    submission_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    status ENUM("pending", "rejected", "accepted", "canceled", "conclusion_requested", "conclusion_accepted", "done") NOT NULL DEFAULT "pending",
+    company_id INT REFERENCES company(id),
+    is_embargo BOOLEAN,
+    request_conclusion DATETIME,
+    conclusion_confirmation DATETIME
+);
+
+-- Table for linking thesis applications with supervisors and cosupervisors
+CREATE TABLE IF NOT EXISTS thesis_application_supervisor (
+    thesis_application_id INT NOT NULL,
+    teacher_id INT NOT NULL, -- provided schema specifies INT(10)
+    is_supervisor BOOLEAN NOT NULL, -- if true then supervisor, else cosupervisor
+    PRIMARY KEY (thesis_application_id, teacher_id),
+    FOREIGN KEY (thesis_application_id) REFERENCES thesis_application(id) ON DELETE CASCADE,
+    FOREIGN KEY (teacher_id) REFERENCES teacher(id) ON DELETE RESTRICT -- RESTRICT policy because why should you delete a teacher?
+);
+
+-- Table for storing companies
+CREATE TABLE IF NOT EXISTS company (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    address VARCHAR(255) DEFAULT NULL
+);
+
+
 
 /**---------------------------------------------------------------------
  **               SQL Syntax
