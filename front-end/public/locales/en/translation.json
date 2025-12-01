@@ -96,7 +96,8 @@
             "disponibile": "Available",
             "in_scadenza": "Expiring",
             "scaduta": "Expired",
-            "stato": "Proposal status"
+            "stato": "Proposal status",
+            "candidatura": "Apply for this proposal"
         }
     },
     "Accedi": "Login",

@@ -1,8 +1,13 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useContext, useState } from 'react';
 
-import { Card, Col, Row } from 'react-bootstrap';
+import { Card, Col, Row, Button } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import Linkify from 'react-linkify';
+import { ThemeContext } from '../App';
+import '../styles/utilities.css';
+import { getSystemTheme } from '../utils/utils';
+import API from '../API';
+
 
 import moment from 'moment';
 import 'moment/locale/it';
@@ -11,10 +16,14 @@ import PropTypes from 'prop-types';
 import '../styles/text.css';
 import '../styles/utilities.css';
 import CustomBadge from './CustomBadge';
+import { use } from 'react';
 
 moment.locale('it');
 
 function ThesisProposalDetail(props) {
+  const { theme } = useContext(ThemeContext);
+  const appliedTheme = theme === 'auto' ? getSystemTheme() : theme;
+  const { t } = useTranslation();
   const {
     id,
     topic,
@@ -33,6 +42,7 @@ function ThesisProposalDetail(props) {
     keywords,
     types,
   } = props.thesisProposal;
+  
   const supervisors = [supervisor, ...internalCoSupervisors];
   return (
     <div className="proposals-container">
@@ -105,11 +115,18 @@ function ThesisProposalDetail(props) {
               {moment(creationDate).format('DD/MM/YYYY')}
             </MyBlock>
           )}
-          {expirationDate && (
-            <MyBlock icon="calendar-clock" title="carriera.proposte_di_tesi.expirationDate">
-              {moment(expirationDate).format('DD/MM/YYYY')}
-            </MyBlock>
-          )}
+          <div className="d-flex align-items-start justify-content-between">
+            {expirationDate && (
+              <div className="flex-grow-1 me-3">
+                <MyBlock icon="calendar-clock" title="carriera.proposte_di_tesi.expirationDate">
+                  {moment(expirationDate).format('DD/MM/YYYY')}
+                </MyBlock>
+              </div>
+            )}
+            <Button className={`btn-${appliedTheme} mb-3`} size="md">
+              {t('carriera.proposta_di_tesi.candidatura')}
+            </Button>
+          </div>
         </Card.Body>
       </Card>
     </div>

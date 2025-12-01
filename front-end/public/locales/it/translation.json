@@ -96,7 +96,8 @@
             "disponibile": "Disponibile",
             "in_scadenza": "In scadenza",
             "scaduta": "Scaduta",
-            "stato": "Stato proposta"
+            "stato": "Stato proposta",
+            "candidatura": "Invia candidatura"
         }
     },
     "Accedi": "Accedi",
