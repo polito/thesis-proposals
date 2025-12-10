@@ -6,6 +6,7 @@ import Linkify from 'react-linkify';
 import { ThemeContext } from '../App';
 import '../styles/utilities.css';
 import { getSystemTheme } from '../utils/utils';
+import API from '../API';
 
 
 import moment from 'moment';
@@ -38,93 +39,128 @@ function ThesisProposalDetail(props) {
     keywords,
     types,
   } = props.thesisProposal;
-  
+
+  const isEligible = props.eligible;
+  const loggedStudentId = props.loggedStudentId; // This should be set to the logged-in student's ID
+
   const supervisors = [supervisor, ...internalCoSupervisors];
-  return (
-    <div className="proposals-container">
-      <Card className="mb-3 roundCard py-2">
-        {topic && (
-          <Card.Header className="border-0">
-            <Row className="d-flex justify-content-between">
-              <Col xs={10} sm={10} md={11} lg={11} xl={11}>
-                <h3 className="thesis-topic">{topic}</h3>
-              </Col>
-              <Col xs={2} sm={2} md={1} lg={1} xl={1} className="thesis-topic text-end">
-                <CustomBadge variant={isAbroad ? 'abroad' : 'italy'} />
-              </Col>
-            </Row>
-          </Card.Header>
-        )}
-        <Card.Body className="pt-2 pb-0">
-          <div className="custom-badge-container mb-3">
-            <CustomBadge variant="status" content={expirationDate} />
-            <CustomBadge variant={isInternal ? 'internal' : 'external'} />
-            {types.map(item => (
-              <CustomBadge key={item.id} variant="type" content={item.type} />
-            ))}
-          </div>
-          <MyBlock icon="user" title="carriera.proposte_di_tesi.supervisors" ignoreMoreLines>
-            <CustomBadge variant="teacher" content={supervisors.map(s => s.lastName + ' ' + s.firstName)} />
-          </MyBlock>
-          {keywords.length > 0 ? (
-            <MyBlock icon="key" title="carriera.proposte_di_tesi.keywords" ignoreMoreLines>
-              <CustomBadge variant="keyword" content={keywords.map(item => item.keyword)} />
-            </MyBlock>
-          ) : null}
-          {externalCoSupervisors && (
-            <MyBlock icon="user-plus" title="carriera.proposta_di_tesi.relatori_esterni">
-              <Linkify>{externalCoSupervisors}</Linkify>
-            </MyBlock>
+  const [sending, setSending] = useState(false);
+
+  const sendApplication = () => {
+    if (sending) return;
+    setSending(true);
+    API.createThesisApplication({
+      student_id: loggedStudentId, // This should be set to the logged-in student's ID
+      thesis_proposal_id: id,
+      topic: topic,
+      company: props.thesisProposal.company || null,
+      supervisors: supervisors.map(sup => ({
+        teacher_id: sup.id,
+        is_supervisor: sup.id === supervisor.id,
+      })),
+    })
+      .then(() => {
+        alert('Candidatura inviata con successo!');
+      })
+      .catch((error) => {
+        console.error('Error sending thesis application:', error);
+      })
+      .finally(() => {
+        setSending(false);
+      });
+  };
+
+  if (sending) {
+    return <div>{'Invio candidatura in corso...'}</div>;
+  }
+
+  else {
+    return (
+      <div className="proposals-container">
+        <Card className="mb-3 roundCard py-2">
+          {topic && (
+            <Card.Header className="border-0">
+              <Row className="d-flex justify-content-between">
+                <Col xs={10} sm={10} md={11} lg={11} xl={11}>
+                  <h3 className="thesis-topic">{topic}</h3>
+                </Col>
+                <Col xs={2} sm={2} md={1} lg={1} xl={1} className="thesis-topic text-end">
+                  <CustomBadge variant={isAbroad ? 'abroad' : 'italy'} />
+                </Col>
+              </Row>
+            </Card.Header>
           )}
-          {description && (
-            <MyBlock icon="memo" title="carriera.proposta_di_tesi.descrizione">
-              <Linkify>{description}</Linkify>
+          <Card.Body className="pt-2 pb-0">
+            <div className="custom-badge-container mb-3">
+              <CustomBadge variant="status" content={expirationDate} />
+              <CustomBadge variant={isInternal ? 'internal' : 'external'} />
+              {types.map(item => (
+                <CustomBadge key={item.id} variant="type" content={item.type} />
+              ))}
+            </div>
+            <MyBlock icon="user" title="carriera.proposte_di_tesi.supervisors" ignoreMoreLines>
+              <CustomBadge variant="teacher" content={supervisors.map(s => s.lastName + ' ' + s.firstName)} />
             </MyBlock>
-          )}
-          {requiredSkills && (
-            <MyBlock icon="head-side-brain" title="carriera.proposta_di_tesi.conoscenze_richieste">
-              <Linkify>{requiredSkills}</Linkify>
-            </MyBlock>
-          )}
-          {additionalNotes && (
-            <MyBlock icon="notes" title="carriera.proposta_di_tesi.note">
-              <Linkify>{additionalNotes}</Linkify>
-            </MyBlock>
-          )}
-          {link && (
-            <MyBlock icon="link" title="Link">
-              <Linkify>{link}</Linkify>
-            </MyBlock>
-          )}
-          {attachmentUrl && (
-            <MyBlock icon="paperclip" title="carriera.proposta_di_tesi.allegato">
-              <a
-                href={`https://didattica.polito.it/pls/portal30/sviluppo.tesi_proposte.download_alleg?idts=${id}&lang=IT`}
-                className="info-detail d-flex align-items-center"
-              >
-                {attachmentUrl}
-              </a>
-            </MyBlock>
-          )}
-          {creationDate && (
-            <MyBlock icon="calendar" title="carriera.proposte_di_tesi.creationDate">
-              {moment(creationDate).format('DD/MM/YYYY')}
-            </MyBlock>
-          )}
-          <div className="d-flex align-items-start justify-content-between">
-            {expirationDate && (
-              <div className="flex-grow-1 me-3">
-                <MyBlock icon="calendar-clock" title="carriera.proposte_di_tesi.expirationDate">
-                  {moment(expirationDate).format('DD/MM/YYYY')}
-                </MyBlock>
-              </div>
+            {keywords.length > 0 ? (
+              <MyBlock icon="key" title="carriera.proposte_di_tesi.keywords" ignoreMoreLines>
+                <CustomBadge variant="keyword" content={keywords.map(item => item.keyword)} />
+              </MyBlock>
+            ) : null}
+            {externalCoSupervisors && (
+              <MyBlock icon="user-plus" title="carriera.proposta_di_tesi.relatori_esterni">
+                <Linkify>{externalCoSupervisors}</Linkify>
+              </MyBlock>
             )}
-            <MyButton />
-          </div>
-        </Card.Body>
-      </Card>
-    </div>
-  );
+            {description && (
+              <MyBlock icon="memo" title="carriera.proposta_di_tesi.descrizione">
+                <Linkify>{description}</Linkify>
+              </MyBlock>
+            )}
+            {requiredSkills && (
+              <MyBlock icon="head-side-brain" title="carriera.proposta_di_tesi.conoscenze_richieste">
+                <Linkify>{requiredSkills}</Linkify>
+              </MyBlock>
+            )}
+            {additionalNotes && (
+              <MyBlock icon="notes" title="carriera.proposta_di_tesi.note">
+                <Linkify>{additionalNotes}</Linkify>
+              </MyBlock>
+            )}
+            {link && (
+              <MyBlock icon="link" title="Link">
+                <Linkify>{link}</Linkify>
+              </MyBlock>
+            )}
+            {attachmentUrl && (
+              <MyBlock icon="paperclip" title="carriera.proposta_di_tesi.allegato">
+                <a
+                  href={`https://didattica.polito.it/pls/portal30/sviluppo.tesi_proposte.download_alleg?idts=${id}&lang=IT`}
+                  className="info-detail d-flex align-items-center"
+                >
+                  {attachmentUrl}
+                </a>
+              </MyBlock>
+            )}
+            {creationDate && (
+              <MyBlock icon="calendar" title="carriera.proposte_di_tesi.creationDate">
+                {moment(creationDate).format('DD/MM/YYYY')}
+              </MyBlock>
+            )}
+            <div className="d-flex align-items-start justify-content-between">
+              {expirationDate && (
+                <div className="flex-grow-1 me-3">
+                  <MyBlock icon="calendar-clock" title="carriera.proposte_di_tesi.expirationDate">
+                    {moment(expirationDate).format('DD/MM/YYYY')}
+                  </MyBlock>
+                </div>
+              )}
+              <MyButton isEligible={isEligible} sendApplication={sendApplication} />
+            </div>
+          </Card.Body>
+        </Card>
+      </div>
+    );
+  }
 }
 
 function MyBlock({ icon, title, children, ignoreMoreLines }) {
@@ -159,13 +195,16 @@ function MyBlock({ icon, title, children, ignoreMoreLines }) {
   );
 }
 
-function MyButton() {
+
+function MyButton(props) {
   const { theme } = useContext(ThemeContext);
   const appliedTheme = theme === 'auto' ? getSystemTheme() : theme;
   const { t } = useTranslation();
+  const isEligible = props.isEligible;
+  const sendApplication = props.sendApplication;
   return (
-    <Button className={`btn-${appliedTheme} mb-3`} size="md" onClick={() => console.log("Button pressed, still to implement!")}>
-              {t('carriera.proposta_di_tesi.candidatura')}
+    <Button className={`btn-${appliedTheme} mb-3`} size="md" onClick={sendApplication} disabled={!isEligible}>
+      {t('carriera.proposta_di_tesi.candidatura')}
     </Button>);
 }
 
