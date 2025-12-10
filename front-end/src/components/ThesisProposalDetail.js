@@ -159,7 +159,7 @@ function ThesisProposalDetail(props) {
                   </MyBlock>
                 </div>
               )}
-              <MyButton setShowModal={setShowModal} />
+              <MyButton setShowModal={setShowModal} isEligible={isEligible} />
             </div>
           </Card.Body>
         </Card>
