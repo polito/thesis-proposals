@@ -17,6 +17,9 @@ const ThesisProposalSupervisorCoSupervisor = require('./thesis-proposal-supervis
 );
 const LoggedStudent = require('./logged-student')(sequelize, Sequelize.DataTypes);
 const Student = require('./student')(sequelize, Sequelize.DataTypes);
+const ThesisApplication = require('./thesis-application')(sequelize, Sequelize.DataTypes);
+const ThesisApplicationSupervisor = require('./thesis-application-supervisor')(sequelize, Sequelize.DataTypes);
+const Company = require('./company')(sequelize, Sequelize.DataTypes);
 
 const db = {};
 
@@ -34,6 +37,10 @@ db.ThesisProposalType = ThesisProposalType;
 db.Teacher = Teacher;
 db.ThesisProposalSupervisorCoSupervisor = ThesisProposalSupervisorCoSupervisor;
 db.Student = Student;
+db.ThesisApplication = ThesisApplication;
+db.ThesisApplicationSupervisor = ThesisApplicationSupervisor;
+db.LoggedStudent = LoggedStudent;
+db.Company = Company;
 
 // Define relationships
 
@@ -125,6 +132,26 @@ Student.hasOne(LoggedStudent, {
 
 LoggedStudent.belongsTo(Student, {
   foreignKey: 'student_id',
+});
+
+ThesisApplication.belongsTo(Student, { foreignKey: 'student_id' });
+Student.hasMany(ThesisApplication, { foreignKey: 'student_id' });
+
+ThesisApplication.belongsTo(ThesisProposal, { foreignKey: 'thesis_proposal_id' });
+ThesisProposal.hasMany(ThesisApplication, { foreignKey: 'thesis_proposal_id' });
+
+ThesisApplication.belongsTo(Company, { foreignKey: 'company_id' });
+Company.hasMany(ThesisApplication, { foreignKey: 'company_id' });
+
+ThesisApplication.belongsToMany(Teacher, {
+  through: ThesisApplicationSupervisor,
+  foreignKey: 'thesis_application_id',
+  otherKey: 'teacher_id',
+});
+Teacher.belongsToMany(ThesisApplication, {
+  through: ThesisApplicationSupervisor,
+  foreignKey: 'teacher_id',
+  otherKey: 'thesis_application_id',
 });
 
 module.exports = db;

@@ -108,6 +108,62 @@ async function getThesisProposalById(id, lang) {
   }
 }
 
+/****** Thesis Application APIs ******/
+
+async function getThesisApplications(page, limit, status) {
+  try {
+    const params = { page, limit };
+    if (status) params.status = status;
+
+    const response = await axios.get(`${URL}/thesis-applications`, { params });
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching thesis applications:', error);
+  }
+}
+
+async function getThesisApplicationById(id) {
+  try {
+    const response = await axios.get(`${URL}/thesis-applications/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching thesis application by ID:', error);
+  }
+}
+
+async function createThesisApplication(applicationData) {
+  try {
+    const response = await axios.post(`${URL}/thesis-applications`, applicationData);
+    return response.data;
+  } catch (error) {
+    console.error('Error creating thesis application:', error);
+    throw error; 
+  }
+}
+
+async function checkStudentEligibility(studentId) {
+  try {
+    const response = await axios.get(`${URL}/thesis-applications/eligibility`, {
+      params: { studentId }
+    });
+    return response.data; 
+  } catch (error) {
+    console.error('Error checking student eligibility:', error);
+  }
+}
+
+async function updateThesisApplicationStatus(id, status) {
+  try {
+    const response = await axios.patch(`${URL}/thesis-applications/${id}/status`, { status });
+    return response.data;
+  } catch (error) {
+    console.error('Error updating thesis application status:', error);
+    throw error;
+  }
+}
+
+// ------------------------------------
+
 const buildParams = (lang, page, limit, filters, search, sorting) => {
   const params = {
     lang,
@@ -165,6 +221,11 @@ const API = {
   getThesisProposalsKeywords,
   getThesisProposalsTeachers,
   getThesisProposalById,
+  getThesisApplications,
+  getThesisApplicationById,
+  createThesisApplication,
+  checkStudentEligibility,
+  updateThesisApplicationStatus
 };
 
 export default API;
