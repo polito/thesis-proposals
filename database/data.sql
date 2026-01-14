@@ -6149,7 +6149,7 @@ VALUES
 -- ↓ companies table ↓
 -- ------------------------------------------------------------
 INSERT INTO
-    companies (name, address)
+    company (name, address)
 VALUES
     ("Reply S.p.A.", "Via Dante, 14, 10123 Torino TO, Italy"),
     ("Stellantis N.V.", "Viale Ciro Menotti, 322, 10128 Torino TO, Italy"),

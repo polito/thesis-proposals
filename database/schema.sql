@@ -2,7 +2,7 @@
  * ?                                             Portale-PoliTO MySQL Schema (MySQL 8.4.3)
  * @createdOn       :   09 November 2024
  * @lastModifiedOn  :   23 January 2025
- * @description     :   SQL Schema for the Portale-PoliTO Database. Designed for MySQL 8.4.3
+ * @thesis_proposaldescription     :   SQL Schema for the Portale-PoliTO Database. Designed for MySQL 8.4.3
  * @note            :   [1681] Integer display width is deprecated and will be removed in a future release.
                         Therefore, we have removed the display width from the INT data type in the provided original schema as well.
                         Also, remember that BOOLEAN data type is treated as an alias for TINYINT(1) since version 5.0 of MySQL.
@@ -165,7 +165,7 @@ CREATE TABLE IF NOT EXISTS thesis_application (
     thesis_proposal_id INT REFERENCES thesis_proposal(id),
     topic VARCHAR(255) NOT NULL,
     submission_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    status ENUM("pending", "rejected", "accepted", "canceled", "conclusion_requested", "conclusion_accepted", "done") NOT NULL DEFAULT "pending",
+    status ENUM("pending", "rejected", "approved", "canceled") NOT NULL DEFAULT "pending",
     company_id INT REFERENCES company(id),
     is_embargo BOOLEAN,
     request_conclusion DATETIME,

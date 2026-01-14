@@ -131,6 +131,17 @@ async function getThesisApplicationById(id) {
   }
 }
 
+async function getStudentActiveApplication(studentId) {
+  try {
+    const response = await axios.get(`${URL}/thesis-applications/active`,{ 
+        params: { studentId } 
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching active student application:', error);
+  }
+}
+
 async function createThesisApplication(applicationData) {
   try {
     const response = await axios.post(`${URL}/thesis-applications`, applicationData);
@@ -225,7 +236,8 @@ const API = {
   getThesisApplicationById,
   createThesisApplication,
   checkStudentEligibility,
-  updateThesisApplicationStatus
+  updateThesisApplicationStatus,
+  getStudentActiveApplication,
 };
 
 export default API;

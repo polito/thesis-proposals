@@ -17,6 +17,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING(255),
             allowNull: false
         },
+        description: {
+            type: DataTypes.TEXT,
+            allowNull: false
+        },
         submission_date: {
             type: DataTypes.DATE,
             allowNull: false,

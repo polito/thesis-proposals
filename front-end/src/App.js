@@ -19,6 +19,7 @@ import Servizi from './pages/Servizi';
 import LaureaEdEsameFinale from './pages/carriera/LaureaEdEsameFinale';
 import PropostaDiTesi from './pages/carriera/PropostaDiTesi';
 import ProposteDiTesi from './pages/carriera/ProposteDiTesi';
+import Tesi from './pages/carriera/Tesi';
 import { getSystemTheme, scrollTop } from './utils/utils';
 
 export const FavoritesContext = createContext(null);
@@ -111,6 +112,7 @@ function App() {
                     <Route path="/carriera/proposte_di_tesi" element={<ProposteDiTesi />} />
                     <Route path="/carriera/proposte_di_tesi/:id" element={<PropostaDiTesi />} />
                     <Route path="/carriera/laurea_ed_esame_finale" element={<LaureaEdEsameFinale />} />
+                    <Route path="/carriera/tesi" element={<Tesi />} />
                     <Route path="/opportunita" element={<Opportunita />} />
                     <Route path="/servizi" element={<Servizi />} />
                     <Route path="/help" element={<Help />} />

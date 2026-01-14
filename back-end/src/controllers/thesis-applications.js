@@ -53,7 +53,13 @@ const fetchThesisApplications = async (where, includes, pagination) => {
     distinct: true
   });
 
-  const applications = rows.map(app => thesisApplicationSchema.parse(app.toJSON()));
+  const applications = rows.map(app => {
+    const json = app.toJSON();
+    if (!json.teachers && json.Teachers) {
+      json.teachers = json.Teachers;
+    }
+    return thesisApplicationSchema.parse(json);
+  });
 
   return {
     count,
@@ -115,7 +121,11 @@ const getThesisApplicationById = async (req, res) => {
       return res.status(404).json({ error: 'Thesis application not found' });
     }
 
-    const formattedApplication = thesisApplicationSchema.parse(application.toJSON());
+    const appJson = application.toJSON();
+    if (!appJson.teachers && appJson.Teachers) {
+      appJson.teachers = appJson.Teachers;
+    }
+    const formattedApplication = thesisApplicationSchema.parse(appJson);
 
     res.json(formattedApplication);
   } catch (error) {
@@ -131,6 +141,7 @@ const createThesisApplication = async (req, res) => {
       student_id,
       thesis_proposal_id,
       topic,
+      description,
       company,
       supervisors
     } = req.body;
@@ -150,6 +161,7 @@ const createThesisApplication = async (req, res) => {
       student_id,
       thesis_proposal_id: thesis_proposal_id || null,
       topic,
+      description,
       company_id: companyId,
       status: 'pending'
     }, { transaction: t });
@@ -231,10 +243,45 @@ const checkStudentEligibility = async (req, res) => {
   }
 };
 
+const getStudentActiveApplication = async (req, res) => {
+  try {
+    const { studentId } = req.query;
+    if (!studentId) {
+      return res.status(400).json({ error: 'studentId query parameter is required' });
+    }
+
+    const activeApplication = await ThesisApplication.findOne({
+      where: {
+        student_id: studentId,
+        status: { [Op.in]: ['pending', 'accepted', 'conclusion_requested', 'conclusion_accepted', 'done'] }
+      },
+      include: getApplicationIncludes()
+    });
+
+    if (!activeApplication) {
+      return res.status(404).json({ error: 'No active application found for the student' });
+    }
+
+    // Normalize included teachers key to match schema expectations
+    const activeAppJson = activeApplication.toJSON();
+    if (!activeAppJson.teachers && activeAppJson.Teachers) {
+      activeAppJson.teachers = activeAppJson.Teachers;
+    }
+
+    const formattedApplication = thesisApplicationSchema.parse(activeAppJson);
+
+    res.json(formattedApplication);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: error.message });
+  }
+};
+
 module.exports = {
   getThesisApplications,
   getThesisApplicationById,
   createThesisApplication,
   updateThesisApplicationStatus,
-  checkStudentEligibility
+  checkStudentEligibility,
+  getStudentActiveApplication
 };

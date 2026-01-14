@@ -5,12 +5,14 @@ const {
   createThesisApplication,
   getThesisApplicationById,
   updateThesisApplicationStatus,
-  checkStudentEligibility
+  checkStudentEligibility,
+  getStudentActiveApplication
 } = require('../controllers/thesis-applications');
 
 router.get('/', getThesisApplications);
 router.post('/', createThesisApplication);
 router.get('/eligibility', checkStudentEligibility);
+router.get('/active', getStudentActiveApplication);
 router.get('/:id', getThesisApplicationById);
 router.patch('/:id/status', updateThesisApplicationStatus);
 module.exports = router;
