@@ -15,7 +15,7 @@ import PropTypes from 'prop-types';
 
 import '../styles/text.css';
 import '../styles/utilities.css';
-import '../styles/modal.css';
+import '../styles/custom-modal.css';
 import CustomBadge from './CustomBadge';
 
 
@@ -61,9 +61,10 @@ function ThesisProposalDetail(props) {
         teacher_id: sup.id,
         is_supervisor: sup.id === supervisor.id,
       })),
+      description: description || '',
     })
       .then(() => {
-        
+
       })
       .catch((error) => {
         console.error('Error sending thesis application:', error);

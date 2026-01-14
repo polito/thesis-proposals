@@ -101,6 +101,33 @@
             "chiudi": "Close",
             "modal_contenuto": "Are you sure you want to apply for this thesis proposal?",
             "prosegui": "Apply"
+        },
+        "tesi": {
+            "title": "Thesis",
+            "section_description": "Section dedicated to managing your thesis, with the ability to upload the final work and track the evaluation status.",
+            "error": "Error while rendering the active thesis",
+            "pending": "Under evaluation",
+            "accepted": "Accepted",
+            "rejected": "Rejected",
+            "canceled": "Canceled",
+            "conclusion_requested": "Conclusion requested",
+            "conclusion_accepted": "Conclusion accepted",
+            "done": "Completed",
+            "status": "Application status",
+            "utilities": {
+                "title": "Useful resources",
+                "copyright": "Copyright information",
+                "template": "Letter for company/organization thesis: ",
+                "plagiarism": "How to avoid plagiarism",
+                "italian_version": "Italian version",
+                "english_version": "English version",
+                "plagiarism_link": "https://youtu.be/FxwDKfmcCUU"
+            },
+            "submission_date": "Thesis application date",
+            "date_conclusion_requested": "Conclusion request date",
+            "date_conclusion_confirmation": "Conclusion confirmation date",
+            "supervisors": "Supervisors",
+            "your_thesis": "Your thesis: "
         }
     },
     "Accedi": "Login",

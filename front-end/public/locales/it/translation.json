@@ -101,6 +101,35 @@
             "chiudi": "Chiudi",
             "modal_contenuto": "Sei sicuro di voler inviare la candidatura per questa proposta di tesi?",
             "prosegui": "Invia"
+        },
+        "tesi": {
+            "title": "Tesi",
+            "co_supervisors": "Co relatori",
+            "section_description": "Sezione dedicata alla gestione della tesi di laurea, con la possibilità di caricare il lavoro finale e monitorare lo stato della valutazione.",
+            "error": "Errore durante il caricamento della tesi attiva",
+            "stato_candidatura": "Stato candidatura",
+            "pending": "In valutazione",
+            "accepted": "Accettata",
+            "rejected": "Respinta",
+            "canceled": "Annullata",
+            "conclusion_requested": "Richiesta conclusione",
+            "conclusion_accepted": "Conclusione accettata",
+            "done": "Completata",
+            "status": "Stato candidatura",
+            "utilities": {
+                "title": "Risorse utili",
+                "copyright": "Informazioni sul diritto d'autore",
+                "template": "Lettera per tesi in azienda/ente: ",
+                "plagiarism": "Come evitare il plagio",
+                "italian_version": "Versione in italiano",
+                "english_version": "Versione in inglese",
+                "plagiarism_link": "https://youtu.be/rFEAPKHMV5U"
+            },
+            "submission_date": "Data richiesta tesi",
+            "date_conclusion_requested": "Data richiesta conclusione",
+            "date_conclusion_confirmation": "Data conferma conclusione",
+            "supervisors": "Relatori",
+            "your_thesis": "La tua tesi: "
         }
     },
     "Accedi": "Accedi",
