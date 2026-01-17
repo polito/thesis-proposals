@@ -53,32 +53,12 @@ const createThesisApplication = async (req, res) => {
     // Create ThesisApplication
     const newApplication = await ThesisApplication.create({
       topic: applicationData.topic,
+      student_id: loggedStudent[0].id,
+      thesis_proposal_id: applicationData.proposal ? applicationData.proposal.id : null,
+      company_id: applicationData.company ? applicationData.company.id : null,
       status: 'pending',
       submission_date: new Date().toISOString()
     }, { transaction: t });
-    console.log('After Application Creation');
-    // Link Student
-    await ThesisApplicationStudent.create({
-      thesis_application_id: newApplication.id,
-      student_id: loggedStudent[0].id,
-    }, { transaction: t });
-    console.log('After Student Link');
-    // Link Company if provided
-    if (applicationData.company) {
-      await ThesisApplicationCompany.create({
-        thesis_application_id: newApplication.id,
-        company_id: applicationData.company.id,
-      }, { transaction: t });
-    }
-    console.log('After Company Link');
-    // Link Proposal if provided
-    if (applicationData.proposal) {
-      await ThesisApplicationProposal.create({
-        thesis_application_id: newApplication.id,
-        thesis_proposal_id: applicationData.proposal.id,
-      }, { transaction: t });
-    }
-    console.log('After Proposal Link');
     // Link Supervisor and Co-Supervisors
     const supervisors = [applicationData.supervisor, ...(applicationData.coSupervisors || [])];
     for (const supervisor of supervisors) {
@@ -88,7 +68,6 @@ const createThesisApplication = async (req, res) => {
         is_supervisor: supervisor.id === applicationData.supervisor.id,
       }, { transaction: t });
     }
-    console.log('After Supervisors Link');
     await t.commit();
     const responsePayload = {
       id: newApplication.id,

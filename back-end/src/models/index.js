@@ -18,9 +18,6 @@ const ThesisProposalSupervisorCoSupervisor = require('./thesis-proposal-supervis
 const LoggedStudent = require('./logged-student')(sequelize, Sequelize.DataTypes);
 const Student = require('./student')(sequelize, Sequelize.DataTypes);
 const ThesisApplication = require('./thesis-application')(sequelize, Sequelize.DataTypes);
-const ThesisApplicationStudent = require('./thesis-application-student')(sequelize, Sequelize.DataTypes);
-const ThesisApplicationCompany = require('./thesis-application-company')(sequelize, Sequelize.DataTypes);
-const ThesisApplicationProposal = require('./thesis-application-proposal')(sequelize, Sequelize.DataTypes);
 const ThesisApplicationSupervisorCoSupervisor = require('./thesis-application-supervisor-cosupervisor')(sequelize, Sequelize.DataTypes);
 const Company = require('./company')(sequelize, Sequelize.DataTypes);
 
@@ -42,9 +39,6 @@ db.ThesisProposalSupervisorCoSupervisor = ThesisProposalSupervisorCoSupervisor;
 db.Student = Student;
 db.ThesisApplication = ThesisApplication;
 db.ThesisApplicationSupervisorCoSupervisor = ThesisApplicationSupervisorCoSupervisor;
-db.ThesisApplicationStudent = ThesisApplicationStudent;
-db.ThesisApplicationProposal = ThesisApplicationProposal;
-db.ThesisApplicationCompany = ThesisApplicationCompany;
 db.LoggedStudent = LoggedStudent;
 db.Company = Company;
 
@@ -140,42 +134,28 @@ LoggedStudent.belongsTo(Student, {
   foreignKey: 'student_id',
 });
 
-// ThesisApplication - Student (one-to-many)
-Student.hasMany(ThesisApplicationStudent, {
+Student.hasMany(ThesisApplication, {
   foreignKey: 'student_id',
 });
 
-ThesisApplicationStudent.belongsTo(Student, {
+ThesisApplication.belongsTo(Student, {
   foreignKey: 'student_id',
 });
 
-// ThesisApplication - Company (one-to-many)
-Company.hasMany(ThesisApplicationCompany, {
+Company.hasMany(ThesisApplication, {
   foreignKey: 'company_id',
 });
 
-ThesisApplicationCompany.belongsTo(Company, {
+ThesisApplication.belongsTo(Company, {
   foreignKey: 'company_id',
 });
 
-// ThesisApplication - ThesisProposal (one-to-many)
-ThesisProposal.hasMany(ThesisApplicationProposal, {
+ThesisProposal.hasMany(ThesisApplication, {
   foreignKey: 'thesis_proposal_id',
 });
 
-ThesisApplicationProposal.belongsTo(ThesisProposal, {
+ThesisApplication.belongsTo(ThesisProposal, {
   foreignKey: 'thesis_proposal_id',
 });
-
-// ThesisApplication and ThesisApplicationSupervisorCoSupervisor (one-to-many)
-ThesisApplication.hasMany(ThesisApplicationSupervisorCoSupervisor, {
-  foreignKey: 'thesis_application_id',
-});
-
-ThesisApplicationSupervisorCoSupervisor.belongsTo(ThesisApplication, {
-  foreignKey: 'thesis_application_id',
-});
-
-
 
 module.exports = db;
