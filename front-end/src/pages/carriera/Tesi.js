@@ -3,44 +3,57 @@ import React, { useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import API from '../../API';
-import { BodyDataLoadingContext, LoggedStudentContext } from '../../App';
+import { BodyDataLoadingContext } from '../../App';
 import CustomBadge from '../../components/CustomBadge';
 import CustomBreadcrumb from '../../components/CustomBreadcrumb';
 import Thesis from '../../components/Thesis';
+import ThesisApplicationHistory from '../../components/ThesisApplicationHistory';
 
 
 export default function Tesi() {
   const { setBodyDataLoading } = useContext(BodyDataLoadingContext);
-  const { loggedStudent } = useContext(LoggedStudentContext);
   const [thesisApplication, setThesisApplication] = useState(null);
+  const [thesis, setThesis] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
-  useEffect(() => {
-    if (!loggedStudent?.id) {
-      return;
-    }
+useEffect(() => {
+  setBodyDataLoading(true);
+  setIsLoading(true);
 
-    setBodyDataLoading(true);
-    setIsLoading(true);
-
-    API.getStudentActiveApplication(loggedStudent.id)
-      .then(fetchedThesisApplication => {
-        console.log('Fetched Thesis Application:', fetchedThesisApplication);
-        setThesisApplication(fetchedThesisApplication);
+  Promise.all([
+    API.getLoggedStudentThesis()
+      .then((data) => {
+        setThesis(data);
       })
-      .catch(error => console.error('Error fetching active student application:', error))
-      .finally(() => {
-        setBodyDataLoading(false);
-        setIsLoading(false);
-      });
-  }, [loggedStudent, setBodyDataLoading]);
+      .catch((error) => {
+        console.error('Error fetching thesis:', error);
+        setThesis(null);
+      }),
+    
+    API.getLastStudentApplication()
+      .then((appData) => {
+        setThesisApplication(appData);
+      })
+      .catch((appError) => {
+        console.error('Error fetching thesis application:', appError);
+        setThesisApplication(null);
+      })
+  ])
+  .finally(() => {
+    setIsLoading(false);
+    setBodyDataLoading(false);
+  });
+
+}, [setBodyDataLoading]);
 
     const renderContent = () => {
       if (isLoading) {
         return <></>;
+      } else if (thesis) {
+        return <Thesis thesis={thesis}  />;
       } else if (thesisApplication) {
-        return <Thesis thesisApplication={thesisApplication}  />;
+        return <ThesisApplicationHistory thesisApplication={thesisApplication}  />;
       } else {
         return <CustomBadge variant="error" content={t('carriera.tesi.error')} />;
       }

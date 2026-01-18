@@ -1,5 +1,3 @@
-const teacher = require("./teacher");
-
 module.exports = (sequelize, DataTypes) => {
   const ThesisApplicationSupervisorCoSupervisor = sequelize.define(
     'thesis-application-supervisor-cosupervisor',

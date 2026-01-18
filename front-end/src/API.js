@@ -110,35 +110,12 @@ async function getThesisProposalById(id, lang) {
 
 /****** Thesis Application APIs ******/
 
-async function getThesisApplications(page, limit, status) {
+async function getLastStudentApplication() {
   try {
-    const params = { page, limit };
-    if (status) params.status = status;
-
-    const response = await axios.get(`${URL}/thesis-applications`, { params });
+    const response = await axios.get(`${URL}/thesis-applications`);
     return response.data;
   } catch (error) {
-    console.error('Error fetching thesis applications:', error);
-  }
-}
-
-async function getThesisApplicationById(id) {
-  try {
-    const response = await axios.get(`${URL}/thesis-applications/${id}`);
-    return response.data;
-  } catch (error) {
-    console.error('Error fetching thesis application by ID:', error);
-  }
-}
-
-async function getStudentActiveApplication(studentId) {
-  try {
-    const response = await axios.get(`${URL}/thesis-applications/active`,{ 
-        params: { studentId } 
-    });
-    return response.data;
-  } catch (error) {
-    console.error('Error fetching active student application:', error);
+    console.error('Error fetching last student thesis application:', error);
   }
 }
 
@@ -163,15 +140,16 @@ async function checkStudentEligibility(studentId) {
   }
 }
 
-async function updateThesisApplicationStatus(id, status) {
+async function getLoggedStudentThesis(){
   try {
-    const response = await axios.patch(`${URL}/thesis-applications/${id}/status`, { status });
+    const response = await axios.get(`${URL}/thesis`);
     return response.data;
   } catch (error) {
-    console.error('Error updating thesis application status:', error);
-    throw error;
+    console.error('Error fetching student thesis:', error);
   }
+
 }
+
 
 // ------------------------------------
 
@@ -232,12 +210,10 @@ const API = {
   getThesisProposalsKeywords,
   getThesisProposalsTeachers,
   getThesisProposalById,
-  getThesisApplications,
-  getThesisApplicationById,
   createThesisApplication,
+  getLastStudentApplication,
   checkStudentEligibility,
-  updateThesisApplicationStatus,
-  getStudentActiveApplication,
+  getLoggedStudentThesis
 };
 
 export default API;

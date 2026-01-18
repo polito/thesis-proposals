@@ -7,10 +7,10 @@ const teacherSchema = require('./Teacher');
 const thesisSchema = z.object({
     id: z.number(),
     topic: z.string(),
-    student: z.object(studentSchema),
-    supervisor: z.object(teacherSchema),
+    student: studentSchema,
+    supervisor: teacherSchema,
     coSupervisors: z.array(teacherSchema).default([]).nullable(),
-    company: z.object(companySchema).nullable(),
+    company: companySchema.nullable(),
     thesisApplicationDate: z.string().datetime(),
     thesisConclusionRequestDate: z.string().datetime().nullable(),
     thesisConclusionConfirmationDate: z.string().datetime().nullable(),

@@ -1,15 +1,12 @@
-const { Op, where } = require('sequelize');
+const { Op } = require('sequelize');
 const { QueryTypes } = require('sequelize');
 const { z } = require('zod');
 const {
   sequelize,
-  Company,
   Teacher,
   ThesisApplication,
   ThesisApplicationSupervisorCoSupervisor,
-  ThesisApplicationStudent,
-  ThesisApplicationCompany,
-  ThesisApplicationProposal,
+  ThesisApplicationStatusHistory,
 } = require('../models');
 const thesisApplicationRequestSchema = require('../schemas/ThesisApplicationRequest');
 const thesisApplicationResponseSchema = require('../schemas/ThesisApplicationResponse');
@@ -68,6 +65,13 @@ const createThesisApplication = async (req, res) => {
         is_supervisor: supervisor.id === applicationData.supervisor.id,
       }, { transaction: t });
     }
+    // Link Status History - initial status
+    await ThesisApplicationStatusHistory.create({
+      thesis_application_id: newApplication.id,
+      old_status: null,
+      new_status: newApplication.status || 'pending',
+      change_date: newApplication.submission_date,
+    }, { transaction: t });
     await t.commit();
     const responsePayload = {
       id: newApplication.id,
@@ -106,11 +110,11 @@ const checkStudentEligibility = async (req, res) => {
       { type: QueryTypes.SELECT },
     );
 
-    const links = await ThesisApplicationStudent.findAll({
+    const links = await ThesisApplication.findAll({
       where: { student_id: loggedStudent[0].id }
     });
 
-    const applicationIds = links.map(l => l.thesis_application_id);
+    const applicationIds = links.map(l => l.id);
 
     let eligible = true;
     if (applicationIds.length > 0) {
@@ -129,40 +133,67 @@ const checkStudentEligibility = async (req, res) => {
   }
 };
 
-const getStudentActiveApplication = async (req, res) => {
+const getLastStudentApplication = async (req, res) => {
   try {
-    const { studentId } = req.query;
-    if (!studentId) {
-      return res.status(400).json({ error: 'studentId query parameter is required' });
-    }
+    const loggedStudent = await sequelize.query(
+      `
+      SELECT 
+        s.*
+      FROM student s
+      INNER JOIN logged_student ls ON s.id = ls.student_id
+      LIMIT 1
+      `,
+      { type: QueryTypes.SELECT },
+    );
 
-    const links = await ThesisApplicationStudent.findAll({
-      where: { student_id: studentId }
-    });
-
-    const applicationIds = links.map(l => l.thesis_application_id);
-
-    if (applicationIds.length === 0) {
-      return res.status(404).json({ error: 'No application found' });
-    }
-
-    const activeApplication = await ThesisApplication.findOne({
+    const activeApplication = await ThesisApplication.findAll({
       where: {
-        id: { [Op.in]: applicationIds },
-        status: { [Op.in]: ['pending', 'accepted', 'conclusion_requested', 'conclusion_accepted', 'done'] }
-      }
-      // Add include if needed
+        student_id: loggedStudent[0].id,
+      },
+      order: [['submission_date', 'DESC']],
+      limit: 1,
     });
 
-    if (!activeApplication) {
+    if (activeApplication.length === 0) {
       return res.status(404).json({ error: 'No active application found for the student' });
     }
 
-    const activeAppJson = activeApplication.toJSON();
-    // format if needed
+    const app = activeApplication[0];
 
-    // We can use the response schema here if fully populated
-    // res.json(thesisApplicationResponseSchema.parse(activeAppJson));
+    // Fetch supervisor and co-supervisors
+    const supervisorLinks = await ThesisApplicationSupervisorCoSupervisor.findAll({
+      where: { thesis_application_id: app.id },
+    });
+
+    let supervisorData = null;
+    const coSupervisorsData = [];
+
+    for (const link of supervisorLinks) {
+      const teacher = await Teacher.findByPk(link.teacher_id, {
+        attributes: selectTeacherAttributes(true),
+      });
+      if (teacher) {
+        if (link.is_supervisor) {
+          supervisorData = teacher;
+        } else {
+          coSupervisorsData.push(teacher);
+        }
+      }
+    }
+
+    const responsePayload = {
+      id: app.id,
+      topic: app.topic,
+      supervisor: supervisorData,
+      coSupervisors: coSupervisorsData,
+      company: app.company || null,
+      proposal: app.proposal || null,
+      submissionDate: app.submission_date.toISOString(),
+      status: app.status || 'pending',
+    };
+
+    const activeAppJson = thesisApplicationResponseSchema.parse(responsePayload);
+
     res.json(activeAppJson);
 
   } catch (error) {
@@ -186,7 +217,7 @@ const deleteLastThesisApplication = async (req, res) => {
       { type: QueryTypes.SELECT },
     );
 
-    const links = await ThesisApplicationStudent.findAll({
+    const links = await ThesisApplication.findAll({
       where: { student_id: loggedStudent[0].id },
       transaction: t
     });
@@ -196,7 +227,7 @@ const deleteLastThesisApplication = async (req, res) => {
       return res.status(404).json({ error: 'No application found to delete' });
     }
 
-    const applicationIds = links.map(l => l.thesis_application_id);
+    const applicationIds = links.map(l => l.id);
 
     const lastApplication = await ThesisApplication.findOne({
       where: { id: { [Op.in]: applicationIds } },
@@ -217,21 +248,6 @@ const deleteLastThesisApplication = async (req, res) => {
       transaction: t
     });
 
-    await ThesisApplicationCompany.destroy({
-      where: { thesis_application_id: lastApplication.id },
-      transaction: t
-    });
-
-    await ThesisApplicationProposal.destroy({
-      where: { thesis_application_id: lastApplication.id },
-      transaction: t
-    });
-
-    await ThesisApplicationStudent.destroy({
-      where: { thesis_application_id: lastApplication.id },
-      transaction: t
-    });
-
     await lastApplication.destroy({ transaction: t });
 
     await t.commit();
@@ -245,6 +261,6 @@ const deleteLastThesisApplication = async (req, res) => {
 module.exports = {
   createThesisApplication,
   checkStudentEligibility,
-  getStudentActiveApplication,
-  deleteLastThesisApplication
+  getLastStudentApplication,
+  deleteLastThesisApplication,
 };

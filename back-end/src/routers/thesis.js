@@ -4,4 +4,6 @@ const {
   getLoggedStudentThesis
 } = require('../controllers/thesis');
 
-router.get('/thesis', getLoggedStudentThesis);
+router.get('/', getLoggedStudentThesis);
+
+module.exports = router;
