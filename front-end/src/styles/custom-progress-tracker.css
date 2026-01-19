@@ -51,31 +51,37 @@
 .progress-step-circle.pending {
   border: 2px solid var(--primary-400);
   background-color: var(--primary-200);
+  color: var(--primary-700);
 }
 
 .progress-step-circle.approved {
   border: 2px solid var(--green-700);
   background-color: var(--green-200);
+  color: var(--green-700);
 }
 
 .progress-step-circle.rejected {
   border: 2px solid var(--red-700);
   background-color: var(--red-200);
+  color: var(--red-700);
 }
 
 .progress-step-circle.canceled {
   border: 2px solid var(--red-700);
   background-color: var(--red-200);
+  color: var(--red-700);
 }
 
 .progress-step-circle.inactive {
   border: 2px solid var(--gray-500);
   background-color: var(--gray-100);
+  color: var(--gray-500);
 }
 
 .progress-step-circle.completed {
   border: 2px solid var(--primary-200);
   background-color: var(--background);
+
 }
 
 .progress-step-content {
@@ -168,5 +174,5 @@
 
 .progress-step-circle i {
   font-size: 0.7rem;
-  color: var(--text);
+  color: inherit;
 }
