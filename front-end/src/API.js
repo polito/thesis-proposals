@@ -180,6 +180,19 @@ async function updateThesisApplicationStatus(updateData) {
   }
 }
 
+async function cancelThesisApplication({id: applicationId, note}) {
+  try {
+    const response = await axios.post(`${URL}/thesis-applications/cancel`, {
+      id: applicationId,
+      note: note,
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error cancelling thesis application:', error);
+    throw error; 
+  }
+}
+
 // ------------------------------------
 // Thesis Start from Application API
 async function startThesisFromApplication(applicationData) {
@@ -262,6 +275,7 @@ const API = {
   getStatusHistoryApplication,
   getAllThesisApplications,
   updateThesisApplicationStatus,
+  cancelThesisApplication,
   startThesisFromApplication,
 };
 

@@ -1,7 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
 
-import { useTranslation } from 'react-i18next';
-
 import API from '../../API';
 import { BodyDataLoadingContext, LoggedStudentContext } from '../../App';
 import CustomBreadcrumb from '../../components/CustomBreadcrumb';
@@ -16,7 +14,6 @@ export default function Tesi() {
   const [thesisApplication, setThesisApplication] = useState(null);
   const [thesis, setThesis] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-  const { t } = useTranslation();
   const { loggedStudent } = useContext(LoggedStudentContext);
   const [refreshTrigger, setRefreshTrigger] = useState(0);
 
@@ -28,7 +25,7 @@ const startThesis = (setShowToast, setSuccess) => {
     supervisor: thesisApplication.supervisor,
     coSupervisors: thesisApplication.coSupervisors,
   })
-    .then(() => {
+    .then((data) => {
       setSuccess(true);
       setShowToast(true);
       
@@ -37,7 +34,6 @@ const startThesis = (setShowToast, setSuccess) => {
       }, 5000);
     })
     .catch((error) => {
-      console.error('Error starting thesis:', error);
       setSuccess(false);
       setShowToast(true);
     });
@@ -72,7 +68,7 @@ useEffect(() => {
     setBodyDataLoading(false);
   });
 
-}, [setBodyDataLoading, loggedStudent, refreshTrigger]);
+}, [setBodyDataLoading, loggedStudent]);
 
     const renderContent = () => {
       if (isLoading) {
@@ -80,7 +76,7 @@ useEffect(() => {
       } else if (thesis) {
         return <Thesis thesis={thesis}  />;
       } else if (thesisApplication) {
-        return <ThesisApplication thesisApplication={thesisApplication} startThesis={startThesis} />;
+        return <ThesisApplication thesisApplication={thesisApplication} startThesis={startThesis} setRefreshTrigger={() => setRefreshTrigger((prev) => prev + 1)} />;
       } else {
         return <ThesisNotFound />;
       }

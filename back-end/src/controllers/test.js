@@ -1,22 +1,12 @@
-const { Op } = require('sequelize');
-const { QueryTypes } = require('sequelize');
-const { z } = require('zod');
 const {
-    sequelize,
-    Teacher,
-    Student,
-    ThesisProposal,
     ThesisApplication,
-    ThesisApplicationSupervisorCoSupervisor,
     ThesisApplicationStatusHistory
 } = require('../models');
-const thesisApplicationSchema = require('../schemas/ThesisApplication');
-const selectTeacherAttributes = require('../utils/selectTeacherAttributes');
 
 const updateThesisApplicationStatus = async (req, res) => {
     try {
         // Example logic to update a thesis application
-        const { id, old_status, new_status, note } = req.body;
+        const { id, new_status, note } = req.body;
 
         const application = await ThesisApplication.findByPk(id);
         if (!application) {

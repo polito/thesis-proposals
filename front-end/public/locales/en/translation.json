@@ -164,8 +164,10 @@
                 "canceled_description": "You have decided to withdraw this application. As a result, the thesis proposal is no longer under evaluation and cannot be considered by the supervisor. If you wish, you can submit a new application for another available thesis proposal.",
                 "outcome": "Application outcome",
                 "outcome_description": "In this section, the final judgment expressed by the supervisor at the end of the evaluation phase will be displayed. The student will receive a formal communication as soon as the results are made public and available for consultation.",
-                "show_note": "Show supervisor's note",
-                "hide_note": "Hide supervisor's note"
+                "show_supervisor_note": "Show supervisor's note",
+                "hide_supervisor_note": "Hide supervisor's note",
+                "show_note": "Show note",
+                "hide_note": "Hide note"
             },
             "proceed_to_thesis": "Proceed to start your thesis",
             "start_thesis": "Start your thesis",
@@ -178,7 +180,12 @@
                 "co_supervisors": "Co-supervisors"
             },
             "success_thesis_started": "Thesis started successfully! You can monitor the status of your thesis on this page.",
-            "error_thesis_started": "Error starting thesis."
+            "error_thesis_started": "Error starting thesis.",
+            "cancel_application": "Cancel application",
+            "success_application_canceled": "Application canceled successfully!",
+            "error_application_canceled": "Error canceling application.",
+            "success_application_canceled_content": "You can now apply for other thesis proposals.",
+            "error_application_canceled_content": "An error occurred while canceling the application. Please try again later."
         }
     },
     "Accedi": "Login",

@@ -6,7 +6,8 @@ const {
   checkStudentEligibility,
   getAllThesisApplications,
   getLastStudentApplication,
-  getStatusHistoryApplication
+  getStatusHistoryApplication,
+  cancelThesisApplication,
 } = require('../controllers/thesis-applications');
 
 router.get('/eligibility', checkStudentEligibility);
@@ -15,6 +16,7 @@ router.get('/all', getAllThesisApplications);
 router.get('/status-history', getStatusHistoryApplication);
 router.post('/', createThesisApplication);
 router.delete('/', deleteLastThesisApplication);
+router.post('/cancel', cancelThesisApplication);
 
 
 module.exports = router;

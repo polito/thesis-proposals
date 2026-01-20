@@ -95,7 +95,8 @@ export default function ApplicationProgressTracker({ status, statusHistory }) {
                     onClick={() => setExpandedNote(expandedNote === step.key ? null : step.key)}
                   >
                     <i className="fa-solid fa-comment me-2" />
-                    {expandedNote === step.key ? t('carriera.tesi.progress_application.hide_note') : t('carriera.tesi.progress_application.show_note')}
+                    {step.key !== 'canceled' && (expandedNote === step.key ? t('carriera.tesi.progress_application.hide_supervisor_note') : t('carriera.tesi.progress_application.show_supervisor_note'))}
+                    {step.key === 'canceled' && (expandedNote === step.key ? t('carriera.tesi.progress_application.hide_note') : t('carriera.tesi.progress_application.show_note'))}
                     <i className={`fa-solid fa-chevron-${expandedNote === step.key ? 'up' : 'down'} ms-2`} />
                   </div>
                   {expandedNote === step.key && (

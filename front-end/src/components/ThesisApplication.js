@@ -1,9 +1,8 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Card, Col, Row, Button, Modal, Toast } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import '../styles/utilities.css';
 import '../styles/thesis-item.css';
-import CustomBadge from './CustomBadge';
 import CustomBlock from './CustomBlock';
 import ApplicationProgressTracker from './ApplicationProgressTracker';
 import TeacherContactCard from './TeacherContactCard';
@@ -15,17 +14,21 @@ import { ThemeContext } from '../App';
 import { getSystemTheme } from '../utils/utils';
 
 export default function ThesisApplication({ thesisApplication, startThesis }) {
-  const teachers = [thesisApplication.supervisor, ...thesisApplication.coSupervisors];
   const [statusHistory, setStatusHistory] = useState([]);
   const [showModal, setShowModal] = useState(false);
+  const [showModalCancel, setShowModalCancel] = useState(false);
   const [showToast, setShowToast] = useState(false);
+  const [canceled, setCanceled] = useState(false);
   const [success, setSuccess] = useState(true);
+  const [operationType, setOperationType] = useState('start'); // 'start' or 'cancel'
+  const [note, setNote] = useState('');
   const { theme } = useContext(ThemeContext);
   const appliedTheme = theme === 'auto' ? getSystemTheme() : theme;
 
   const { t } = useTranslation();
 
   useEffect(() => {
+    if (!thesisApplication) return;
     API.getStatusHistoryApplication(thesisApplication.id)
       .then((data) => {
         setStatusHistory(data);
@@ -34,13 +37,30 @@ export default function ThesisApplication({ thesisApplication, startThesis }) {
         console.error('Error fetching status history:', error);
         setStatusHistory([]);
       });
-  }, [thesisApplication]);
+  }, [thesisApplication, thesisApplication?.status]);
 
   const handleStart = () => {
+    setOperationType('start');
     startThesis(setShowToast, setSuccess);
     setShowModal(false);
   };
 
+  const handleCancel = () => {
+    setOperationType('cancel');
+    API.cancelThesisApplication({id: thesisApplication.id, note})
+      .then(() => {
+        setShowToast(true);
+        setCanceled(true);
+        thesisApplication.status = 'canceled';
+      })
+      .catch(() => {
+        setShowToast(true);
+      })
+      .finally(() => {
+        setShowModalCancel(false);
+      });
+  };
+    
 
   return thesisApplication && (
     <>
@@ -61,14 +81,16 @@ export default function ThesisApplication({ thesisApplication, startThesis }) {
             </span>
             <div className="custom-toast__content">
               <strong className="custom-toast__title">
-                {success
-                  ? t('carriera.tesi.success_thesis_started')
-                  : t('carriera.tesi.error_thesis_started')}
+                {operationType === 'cancel' 
+                  ? (canceled ? t('carriera.tesi.success_application_canceled') : t('carriera.tesi.error_application_canceled'))
+                  : (success ? t('carriera.tesi.success_thesis_started') : t('carriera.tesi.error_thesis_started'))
+                }
               </strong>
               <p className="custom-toast__message mb-0">
-                {success
-                  ? t('carriera.tesi.success_thesis_started_content')
-                  : t('carriera.tesi.error_thesis_started_content')}
+                {operationType === 'cancel'
+                  ? (canceled ? t('carriera.tesi.success_application_canceled_content') : t('carriera.tesi.error_application_canceled_content'))
+                  : (success ? t('carriera.tesi.success_thesis_started_content') : t('carriera.tesi.error_thesis_started_content'))
+                }
               </p>
             </div>
             <button
@@ -132,13 +154,23 @@ export default function ThesisApplication({ thesisApplication, startThesis }) {
                   status={thesisApplication.status}
                   statusHistory={statusHistory}
                 />
-                {thesisApplication.status === 'approved' && (
-                  <div className="mt-3 d-flex justify-content-end">
+                <div className="mt-3 d-flex justify-content-end gap-3">
+                  {thesisApplication.status !== 'canceled' && (
+                    <Button
+                      variant="outline-danger"
+                      size="md"
+                      onClick={() => setShowModalCancel(true)}
+                    >
+                      <i className="fa-solid fa-ban me-2"></i>
+                      {t('carriera.tesi.cancel_application')}
+                    </Button>
+                  )}
+                  {thesisApplication.status === 'approved' && (
                     <Button className={`btn-${appliedTheme}`} size="md" onClick={() => setShowModal(true)}>
                       {t('carriera.tesi.proceed_to_thesis')}
                     </Button>
-                  </div>
-                )}
+                  )}
+                </div>
               </Card.Body>
             </Card>
           </Col>
@@ -147,6 +179,12 @@ export default function ThesisApplication({ thesisApplication, startThesis }) {
           show={showModal}
           handleClose={() => setShowModal(false)}
           handleStart={handleStart}
+        />
+        <ThesisCancelModal
+          show={showModalCancel}
+          handleClose={() => setShowModalCancel(false)}
+          handleCancel={handleCancel}
+          handleNoteChange={(e) => setNote(e.target.value)}
         />
       </div>
     </>
@@ -183,7 +221,49 @@ function ThesisStartModal({ show, handleClose, handleStart }) {
         </Button>
         <Button className="modal-confirm mb-3" size="md" onClick={handleStart}>
           <i className="fa-regular fa-arrow-up-right-from-square"></i>
-          {t('carriera.proposta_di_tesi.prosegui')}
+          {t('carriera.tesi.start_thesis')}
+        </Button>
+      </Modal.Footer>
+    </Modal>
+  );
+};
+
+function ThesisCancelModal({ show, handleClose, handleCancel, handleNoteChange }) {
+  const { t } = useTranslation();
+  const { theme } = useContext(ThemeContext);
+  const appliedTheme = theme === 'auto' ? getSystemTheme() : theme;
+
+
+  return (
+    <Modal
+      show={show}
+      onHide={handleClose}
+      contentClassName="modal-content"
+      backdropClassName="modal-overlay"
+      centered
+    >
+      <Modal.Header closeButton={true} className="modal-header">
+        <Modal.Title className="modal-title">
+          <i className="fa-regular fa-circle-exclamation" />
+          {` `}{t('carriera.tesi.cancel_application')}
+        </Modal.Title>
+      </Modal.Header>
+      <Modal.Body className="modal-body">
+        {t('carriera.tesi.cancel_application_content')}
+        <textarea
+          className="form-control mt-3"
+          rows="4"
+          placeholder={t('carriera.tesi.cancel_application_note_placeholder')}
+          onChange={handleNoteChange}
+        />
+      </Modal.Body>
+      <Modal.Footer className="modal-footer">
+        <Button className="modal-cancel mb-3" size="md" onClick={handleClose}>
+          {t('carriera.tesi.close')}
+        </Button>
+        <Button className="modal-confirm mb-3" size="md" onClick={handleCancel}>
+          <i className="fa-regular fa-arrow-up-right-from-square"></i>
+          {t('carriera.tesi.confirm_cancel')}
         </Button>
       </Modal.Footer>
     </Modal>
@@ -192,32 +272,18 @@ function ThesisStartModal({ show, handleClose, handleStart }) {
 
 
 ThesisApplication.propTypes = {
-  thesisApplication: PropTypes.shape({
-    id: PropTypes.number.isRequired,
-    topic: PropTypes.string.isRequired,
-    status: PropTypes.string.isRequired,
-    submissionDate: PropTypes.string,
-    description: PropTypes.string,
-    company: PropTypes.shape({
-      name: PropTypes.string,
-      internshipPeriod: PropTypes.string,
-      contact: PropTypes.string,
-    }),
-    thesisProposal: PropTypes.shape({
-      keywords: PropTypes.arrayOf(PropTypes.string),
-      level: PropTypes.string,
-      type: PropTypes.string,
-      expiration: PropTypes.string,
-      requiredKnowledge: PropTypes.string,
-      notes: PropTypes.string,
-    }),
-    supervisor: PropTypes.object.isRequired,
-    coSupervisors: PropTypes.array,
-  }).isRequired,
+  startThesis: PropTypes.func.isRequired,
 };
 
 ThesisStartModal.propTypes = {
   show: PropTypes.bool.isRequired,
   handleClose: PropTypes.func.isRequired,
-  startThesis: PropTypes.func.isRequired,
+  handleStart: PropTypes.func.isRequired,
+};
+
+ThesisCancelModal.propTypes = {
+  show: PropTypes.bool.isRequired,
+  handleClose: PropTypes.func.isRequired,
+  handleCancel: PropTypes.func.isRequired,
+  handleNoteChange: PropTypes.func.isRequired,
 };

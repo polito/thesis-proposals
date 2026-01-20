@@ -133,8 +133,10 @@
                 "rejected_description": "Il docente relatore ha espresso parere negativo in merito alla candidatura presentata, che risulta pertanto respinta. Lo studente ha la possibilità di consultare eventuali motivazioni o note integrative inserite dal docente accedendo direttamente alla sezione dello storico delle attività.",
                 "canceled": "Ritirata",
                 "canceled_description": "Hai deciso di ritirare questa candidatura. Di conseguenza, la proposta di tesi non è più in valutazione e non potrà essere presa in considerazione dal docente relatore. Se desideri, puoi presentare una nuova candidatura per un'altra proposta di tesi disponibile.",
-                "show_note": "Visualizza nota del relatore",
-                "hide_note": "Nascondi nota del relatore"
+                "show_supervisor_note": "Visualizza nota del relatore",
+                "hide_supervisor_note": "Nascondi nota del relatore",
+                "show_note": "Mostra nota",
+                "hide_note": "Nascondi nota"
             },
             "company": {
                 "name": "Azienda",
@@ -170,6 +172,7 @@
                 "step_5": "Carica la versione definitiva della tesi seguendo le indicazioni fornite dal relatore e dal regolamento."
             },
             "proceed_to_thesis": "Procedi per iniziare la tesi",
+            "proceed": "Procedi",
             "start_thesis": "Inizia la tesi",
             "start_thesis_content": "Sei sicuro di voler iniziare la tua tesi? Una volta iniziata, non potrai più candidarti per altre proposte di tesi. L'azione non può essere annullata.",
             "close": "Chiudi",
@@ -181,7 +184,15 @@
             "error_thesis_started_content": "C'è stato un errore nell'inizio della tesi. Riprova più tardi.",
             "not_found": "Non c'è nulla qui...",
             "message_not_found": "Nessuna candidatura o tesi attiva trovata",
-            "reload_page": "Ricarica la pagina"
+            "reload_page": "Ricarica la pagina",
+            "cancel_application": "Ritira candidatura",
+            "cancel_application_content": "Sei sicuro di voler ritirare la tua candidatura? L'azione non può essere annullata.",
+            "success_application_canceled": "Candidatura ritirata con successo!",
+            "error_application_canceled": "Errore durante il ritiro della candidatura.",
+            "confirm_cancel": "Si, ritira",
+            "success_application_canceled_content": "Ora puoi candidarti per altre proposte di tesi.",
+            "error_application_canceled_content": "Si è verificato un errore durante il ritiro della candidatura. Riprova più tardi.",
+            "cancel_application_note_placeholder": "Inserisci qui il motivo del ritiro (opzionale)..."
         }
     },
     "Accedi": "Accedi",
