@@ -18,6 +18,7 @@ export default function Tesi() {
   const [isLoading, setIsLoading] = useState(true);
   const { t } = useTranslation();
   const { loggedStudent } = useContext(LoggedStudentContext);
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
 
 const startThesis = (setShowToast, setSuccess) => {
   API.startThesisFromApplication({
@@ -32,34 +33,8 @@ const startThesis = (setShowToast, setSuccess) => {
       setSuccess(true);
       setShowToast(true);
       
-      // Ricarica la pagina dopo 5 secondi (stesso tempo del toast autohide)
       setTimeout(() => {
-        setBodyDataLoading(true);
-        setIsLoading(true);
-
-        Promise.all([
-          API.getLoggedStudentThesis()
-            .then((data) => {
-              setThesis(data);
-            })
-            .catch((error) => {
-              console.error('Error fetching thesis:', error);
-              setThesis(null);
-            }),
-          
-          API.getLastStudentApplication()
-            .then((appData) => {
-              setThesisApplication(appData);
-            })
-            .catch((appError) => {
-              console.error('Error fetching thesis application:', appError);
-              setThesisApplication(null);
-            })
-        ])
-        .finally(() => {
-          setIsLoading(false);
-          setBodyDataLoading(false);
-        });
+        setRefreshTrigger((prev) => prev + 1);
       }, 5000);
     })
     .catch((error) => {
@@ -98,7 +73,7 @@ useEffect(() => {
     setBodyDataLoading(false);
   });
 
-}, [setBodyDataLoading, loggedStudent]);
+}, [setBodyDataLoading, loggedStudent, refreshTrigger]);
 
     const renderContent = () => {
       if (isLoading) {
