@@ -143,6 +143,8 @@ export default function ThesisApplicationForm({ proposalId }) {
             .catch((error) => {
                 console.error('Error submitting thesis application:', error);
                 // Handle submission error (e.g., show an error message)
+                setSuccess(false);
+                setShowToast(true);
             });
         }
     };
@@ -154,20 +156,45 @@ export default function ThesisApplicationForm({ proposalId }) {
                 <LoadingModal show={isLoading} onHide={() => setIsLoading(false)} />
             ) : (
                 <>
-                    <Toast
-                        onClose={() => setShowToast(false)}
-                        show={showToast}
-                        delay={5000}
-                        autohide
-                        className="position-fixed top-0 end-0 m-3"
-                    >
-                        <Toast.Header>
-                            <strong className="me-auto">{success ? t('carriera.richiesta_tesi.success_title') : t('carriera.richiesta_tesi.error_title')}</strong>
-                        </Toast.Header>
-                        <Toast.Body>
-                            {success ? t('carriera.richiesta_tesi.success_message') : t('carriera.richiesta_tesi.error_message')}
-                        </Toast.Body>
-                    </Toast>
+
+      <div className="custom-toast-wrapper">
+        <Toast
+          onClose={() => setShowToast(false)}
+          show={showToast}
+          delay={5000}
+          autohide
+          className={`custom-toast ${success ? 'custom-toast--success' : 'custom-toast--error'}`}
+        >
+          <div className="d-flex align-items-start gap-2 w-100">
+            <span className="custom-toast__icon">
+              <i
+                className={success ? 'fa-regular fa-circle-check' : 'fa-regular fa-circle-xmark'}
+                aria-hidden="true"
+              />
+            </span>
+            <div className="custom-toast__content">
+              <strong className="custom-toast__title">
+                {success
+                  ? t('carriera.richiesta_tesi.success')
+                  : t('carriera.richiesta_tesi.error')}
+              </strong>
+              <p className="custom-toast__message mb-0">
+                {success
+                  ? t('carriera.richiesta_tesi.success_content')
+                  : t('carriera.richiesta_tesi.error_content')}
+              </p>
+            </div>
+            <button
+              type="button"
+              className="custom-toast__close"
+              onClick={() => setShowToast(false)}
+              aria-label="Close"
+            >
+              <i className="fa-solid fa-xmark" />
+            </button>
+          </div>
+        </Toast>
+        </div>
                     <div className="proposals-container">
                         <Row className="mb-3">
                             <Col md={8} className="mb-3">

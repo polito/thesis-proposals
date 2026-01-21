@@ -116,7 +116,7 @@ export default function Test() {
                         <Card key={application.id} className="mb-3 roundCard">
                             <Card.Header className="border-0 d-flex justify-content-between align-items-center">
                                 <div>
-                                    <h5 className="mb-1">
+                                    <h5 className="mb-1 thesis-topic">
                                         <i className="fa-solid fa-graduation-cap me-2" />
                                         Application ID: {application.id}
                                     </h5>
@@ -151,7 +151,7 @@ export default function Test() {
 
                                 <hr />
 
-                                {application.status === 'pending' && (<div className="d-flex justify-content-between align-items-center">
+                                {application.status === 'pending' && (<div className="d-flex gap-3 justify-content-end align-items-center">
                                     <strong>Cambia stato:</strong>
                                     <ButtonGroup size="sm">
                                         <Button 
@@ -210,8 +210,9 @@ export default function Test() {
                             value={note}
                             onChange={(e) => setNote(e.target.value)}
                             maxLength={255}
+                            className="textarea-themed"
                         />
-                        <Form.Text className="text-muted">
+                        <Form.Text style={{ color: "var(--text-muted)" }}>
                             {note.length}/255 caratteri
                         </Form.Text>
                     </Form.Group>

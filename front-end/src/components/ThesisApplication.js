@@ -251,7 +251,7 @@ function ThesisCancelModal({ show, handleClose, handleCancel, handleNoteChange }
       <Modal.Body className="modal-body">
         {t('carriera.tesi.cancel_application_content')}
         <textarea
-          className="form-control mt-3"
+          className="form-control mt-3 textarea-themed"
           rows="4"
           placeholder={t('carriera.tesi.cancel_application_note_placeholder')}
           onChange={handleNoteChange}
