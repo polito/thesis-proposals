@@ -121,7 +121,8 @@ export default function Test() {
                                         Application ID: {application.id}
                                     </h5>
                                 </div>
-                                <CustomBadge variant={getStatusBadgeVariant(application.status)} content={t(`carriera.tesi.status_app.${application.status}`)}/>
+                                {console.log(application.status)}
+                                <CustomBadge variant="app_status" content={application.status}/>
                             </Card.Header>
                             <Card.Body>
                                 <div className="mb-3">
@@ -153,14 +154,6 @@ export default function Test() {
                                 {application.status === 'pending' && (<div className="d-flex justify-content-between align-items-center">
                                     <strong>Cambia stato:</strong>
                                     <ButtonGroup size="sm">
-                                        <Button 
-                                            variant="outline-warning"
-                                            disabled={application.status === 'pending'}
-                                            onClick={() => openStatusChangeModal(application, 'pending')}
-                                        >
-                                            <i className="fa-solid fa-clock me-1" />
-                                            Pending
-                                        </Button>
                                         <Button 
                                             variant="outline-success"
                                             disabled={application.status === 'approved'}

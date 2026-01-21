@@ -220,7 +220,7 @@ function ThesisStartModal({ show, handleClose, handleStart }) {
           {t('carriera.tesi.close')}
         </Button>
         <Button className="modal-confirm mb-3" size="md" onClick={handleStart}>
-          <i className="fa-regular fa-arrow-up-right-from-square"></i>
+          <i className="fa-solid fa-paper-plane"></i>
           {t('carriera.tesi.start_thesis')}
         </Button>
       </Modal.Footer>
@@ -262,7 +262,7 @@ function ThesisCancelModal({ show, handleClose, handleCancel, handleNoteChange }
           {t('carriera.tesi.close')}
         </Button>
         <Button className="modal-confirm mb-3" size="md" onClick={handleCancel}>
-          <i className="fa-regular fa-arrow-up-right-from-square"></i>
+          <i className="fa-solid fa-paper-plane"></i>
           {t('carriera.tesi.confirm_cancel')}
         </Button>
       </Modal.Footer>

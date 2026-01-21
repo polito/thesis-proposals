@@ -221,17 +221,17 @@ export default function ThesisApplicationForm({ proposalId }) {
                                             <i className="fa-solid fa-timeline pe-2" />
                                             {t('carriera.richiesta_tesi.what_happens_next')}
                                         </h3>
-                                        <div className="d-flex flex-column gap-2 mb-3">
-                                            <div className="d-flex align-items-start">
+                                        <div className="d-flex flex-column mb-3">
+                                            <div className="d-flex align-items-start mb-2">
                                                 
-                                                <p><i className="fa-solid fa-1 fa-sm pe-3 pt-1" />{t('carriera.richiesta_tesi.step_1')}</p>
+                                                <p className="mb-0"><i className="fa-solid fa-1 fa-sm pe-3 pt-1" />{t('carriera.richiesta_tesi.step_1')}</p>
                                             </div>
-                                            <div className="d-flex align-items-start">
+                                            <div className="d-flex align-items-start mb-2">
                                                 
-                                                <p><i className="fa-solid fa-2 fa-sm pe-3 pt-1" />{t('carriera.richiesta_tesi.step_2')}</p>
+                                                <p className="mb-0"><i className="fa-solid fa-2 fa-sm pe-3 pt-1" />{t('carriera.richiesta_tesi.step_2')}</p>
                                             </div>
-                                            <div className="d-flex align-items-start">
-                                                <p><i className="fa-solid fa-3 fa-sm pe-3 pt-1" />{t('carriera.richiesta_tesi.step_3')}</p>
+                                            <div className="d-flex align-items-start mb-2">
+                                                <p className="mb-0"><i className="fa-solid fa-3 fa-sm pe-3 pt-1" />{t('carriera.richiesta_tesi.step_3')}</p>
                                             </div>
                                         </div>
                                         

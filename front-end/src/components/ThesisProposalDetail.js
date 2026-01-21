@@ -234,7 +234,7 @@ function ApplicationButton(props) {
   const setShowModal = props.setShowModal;
   return (
     <Button className={`btn-${appliedTheme} mb-3`} size="md" onClick={() => setShowModal(true)} disabled={!isEligible}>
-      <i className="fa-regular fa-arrow-up-right-from-square"></i>
+      <i className="fa-solid fa-paper-plane"></i>
       {t('carriera.proposta_di_tesi.candidatura')}
     </Button>);
 }
@@ -248,7 +248,7 @@ function ModifyProposalButton({ proposalId, isEligible }) {
     <Button className={`btn-${appliedTheme} mb-3`} size="md" disabled={!isEligible}
       onClick={() => navigate(`/carriera/richiesta_tesi/${proposalId}`)}
     >
-      <i className="fa-regular fa-pen-to-square"></i>
+      <i className="fa-solid fa-pen-to-square"></i>
       {t('carriera.proposta_di_tesi.modifica_proposta')}
     </Button>
   );
@@ -282,7 +282,7 @@ function ProposalModal({ show, handleClose, sendApplication }) {
           {t('carriera.proposta_di_tesi.chiudi')}
         </Button>
         <Button className="modal-confirm mb-3" size="md" onClick={() => sendApplication()}>
-          <i className="fa-regular fa-arrow-up-right-from-square"></i>
+          <i className="fa-solid fa-paper-plane"></i>
           {t('carriera.proposta_di_tesi.prosegui')}
         </Button>
       </Modal.Footer>
