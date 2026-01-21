@@ -1,0 +1,74 @@
+const { sequelize, ThesisApplicationSupervisorCoSupervisor } = require('../models');
+const {
+  ThesisApplication,
+  ThesisApplicationStatusHistory,
+  Thesis,
+  ThesisSupervisorCoSupervisor,
+} = require('../models');
+
+const updateThesisApplicationStatus = async (req, res) => {
+  try {
+    // Example logic to update a thesis application
+    const { id, new_status, note } = req.body;
+
+    const application = await ThesisApplication.findByPk(id);
+    if (!application) {
+      return res.status(404).json({ error: 'Thesis application not found' });
+    }
+    const t = await sequelize.transaction();
+    await ThesisApplicationStatusHistory.create(
+      {
+        thesis_application_id: id,
+        old_status: application.status,
+        new_status: new_status,
+        note: note || null,
+      },
+      { transaction: t },
+    );
+    application.status = new_status;
+    await application.save({ transaction: t });
+    if (new_status === 'approved') {
+      const application_supervisors = await ThesisApplicationSupervisorCoSupervisor.findAll({
+        where: { thesis_application_id: id },
+      });
+
+      const supervisor = application_supervisors.find(sup => sup.is_supervisor);
+      const co_supervisors = application_supervisors.filter(sup => !sup.is_supervisor);
+      const newThesis = await Thesis.create(
+        {
+          student_id: application.student_id,
+          company_id: application.company_id,
+          topic: application.topic,
+        },
+        { transaction: t },
+      );
+
+      const supervisorEntry = {
+        thesis_id: newThesis.id,
+        teacher_id: supervisor.teacher_id,
+        is_supervisor: true,
+      };
+      await ThesisSupervisorCoSupervisor.create(supervisorEntry, { transaction: t });
+
+      if (co_supervisors && co_supervisors.length > 0) {
+        for (const coSupervisor of co_supervisors) {
+          const coSupervisorEntry = {
+            thesis_id: newThesis.id,
+            teacher_id: coSupervisor.teacher_id,
+            is_supervisor: false,
+          };
+          await ThesisSupervisorCoSupervisor.create(coSupervisorEntry, { transaction: t });
+        }
+      }
+      await t.commit();
+      res.status(200).json(newThesis);
+    }
+  } catch (error) {
+    console.error('Error updating thesis application status:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
+module.exports = {
+  updateThesisApplicationStatus,
+};
