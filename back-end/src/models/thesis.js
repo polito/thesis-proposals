@@ -51,6 +51,10 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING(6),
         allowNull: false,
       },
+      thesis_application_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
       thesis_start_date: {
         type: DataTypes.DATE,
         allowNull: false,

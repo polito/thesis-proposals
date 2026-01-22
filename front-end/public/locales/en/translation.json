@@ -116,6 +116,7 @@
             "accepted": "Accepted",
             "rejected": "Rejected",
             "canceled": "Canceled",
+            "timeline": "Timeline",
             "conclusion_requested": "Conclusion requested",
             "conclusion_accepted": "Conclusion accepted",
             "done": "Completed",
@@ -149,6 +150,7 @@
                 "step_5": "Upload the final version of the thesis following the instructions provided by the supervisor and the regulations."
             },
             "submission_date": "Thesis request date",
+            "start_date": "Thesis start date",
             "date_conclusion_requested": "Conclusion request date",
             "date_conclusion_confirmation": "Conclusion confirmation date",
             "supervisors": "Supervisors",

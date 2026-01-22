@@ -166,4 +166,12 @@ Thesis.belongsToMany(Teacher, {
   otherKey: 'teacher_id',
 });
 
+Thesis.belongsTo(ThesisApplication, {
+  foreignKey: 'thesis_application_id',
+});
+
+ThesisApplication.hasOne(Thesis, {
+  foreignKey: 'thesis_application_id',
+});
+
 module.exports = db;

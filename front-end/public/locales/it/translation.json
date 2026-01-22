@@ -114,8 +114,10 @@
             "your_application": "La tua candidatura: ",
             "error": "Error while rendering the active thesis",
             "submission_date": "Data di richiesta tesi",
+            "start_date": "Data di inizio tesi",
             "days": "giorni",
             "hours": "ore",
+            "Timeline": "Cronologia",
             "status": "Stato corrente",
             "supervisors": "Relatori",
             "contacts": {

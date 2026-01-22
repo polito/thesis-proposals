@@ -233,6 +233,7 @@ CREATE TABLE IF NOT EXISTS thesis(
     language ENUM('it', 'en'),
     company_id INT,
     student_id VARCHAR(6) NOT NULL,
+    thesis_application_id INT NOT NULL,
     abstract TEXT,
     abstract_eng TEXT,
     thesis_file BLOB,
@@ -241,6 +242,9 @@ CREATE TABLE IF NOT EXISTS thesis(
     thesis_start_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     thesis_conclusion_request_date DATETIME,
     thesis_conclusion_confirmation_date DATETIME,
+    FOREIGN KEY (company_id) REFERENCES company(id) ON DELETE RESTRICT, -- RESTRICT policy in order to pay attention to the deletion of a company
+    FOREIGN KEY (student_id) REFERENCES student(id) ON DELETE RESTRICT, -- RESTRICT policy because why should you delete a student?
+    FOREIGN KEY (thesis_application_id) REFERENCES thesis_application(id) ON DELETE CASCADE, -- CASCADE policy to delete the thesis if the application is deleted
     FOREIGN KEY (license_id) REFERENCES license(id) ON DELETE RESTRICT -- RESTRICT policy because why should you delete a license?
 );
 

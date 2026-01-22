@@ -39,6 +39,7 @@ const updateThesisApplicationStatus = async (req, res) => {
           student_id: application.student_id,
           company_id: application.company_id,
           topic: application.topic,
+          thesis_application_id: application.id,
         },
         { transaction: t },
       );

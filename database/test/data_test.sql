@@ -3370,6 +3370,7 @@ INSERT INTO
     thesis (
         id,
         topic,
+        thesis_application_id,
         student_id,
         company_id,    
         thesis_start_date
@@ -3378,6 +3379,7 @@ VALUES
     (
         1,
         "Valutazione Critica delle Capacità di Generazione del Codice da Parte di LLM in Contesto di Istruzione",
+        1,
         314796,
         NULL,
         "2025-02-01"

@@ -1,5 +1,12 @@
 const { QueryTypes } = require('sequelize');
-const { sequelize, Thesis, ThesisSupervisorCoSupervisor, Teacher, Student } = require('../models');
+const {
+  sequelize,
+  Thesis,
+  ThesisSupervisorCoSupervisor,
+  Teacher,
+  Student,
+  ThesisApplicationStatusHistory,
+} = require('../models');
 const thesisSchema = require('../schemas/Thesis');
 const toSnakeCase = require('../utils/snakeCase');
 
@@ -62,6 +69,11 @@ const getLoggedStudentThesis = async (req, res) => {
       companyData = await Company.findByPk(thesisData.company_id);
     }
 
+    const statusHistoryRecords = await ThesisApplicationStatusHistory.findAll({
+      where: { thesis_application_id: thesisData.thesis_application_id },
+    });
+    const statusHistoryData = statusHistoryRecords.map(r => r.toJSON());
+
     const responsePayload = {
       id: thesisData.id,
       topic: thesisData.topic,
@@ -69,6 +81,7 @@ const getLoggedStudentThesis = async (req, res) => {
       supervisor: supervisorData,
       co_supervisors: coSupervisorsData,
       company: companyData ? companyData.toJSON() : null,
+      status_history: statusHistoryData,
       thesis_start_date: thesisData.thesis_start_date.toISOString(),
       thesis_conclusion_request_date: thesisData.thesis_conclusion_request_date
         ? thesisData.thesis_conclusion_request_date.toISOString()
@@ -110,7 +123,7 @@ const createStudentThesis = async (req, res) => {
         student_id: loggedStudent[0].id,
         company_id: thesis_data.company ? thesis_data.company.id : null,
         topic: thesis_data.topic,
-        thesis_start_date: thesis_data.thesis_start_date,
+        thesis_application_id: thesis_data.thesis_application_id,
       },
       { transaction: t },
     );

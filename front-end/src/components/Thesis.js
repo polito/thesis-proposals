@@ -10,122 +10,109 @@ import API from '../API';
 import '../styles/utilities.css';
 import CustomBlock from './CustomBlock';
 import TeacherContactCard from './TeacherContactCard';
-import ThesisSteps from './ThesisSteps';
+import Timeline from './Timeline';
 
 export default function Thesis(props) {
   const { t } = useTranslation();
   const { thesis } = props;
   const supervisors = [thesis.supervisor, ...thesis.coSupervisors];
+  const activeStep = 'step_1';
 
   return (
-    <div className="proposals-container">
-      <Row className="mb-3">
-        <Col md={8} lg={8}>
-          <Card className="mb-3 roundCard py-2">
-            <Card.Header className="border-0">
-              <Row className="d-flex align-items-center">
-                <Col>
-                  <h3 className="thesis-topic">
-                    <i className="fa-solid fa-graduation-cap fa-sm pe-2" />
-                    {t('carriera.tesi.your_thesis')}
-                  </h3>
-                </Col>
-              </Row>
-            </Card.Header>
-            <Card.Body className="pt-2 pb-0">
-              <CustomBlock icon="book-open" title="carriera.proposte_di_tesi.topic" ignoreMoreLines={true}>
-                {thesis.topic.length > 600 ? thesis.topic.substring(0, 597) + '...' : thesis.topic}
-              </CustomBlock>
-              <CustomBlock icon="calendar" title="carriera.tesi.submission_date" ignoreMoreLines={true}>
-                {thesis.thesisStartDate ? moment(thesis.thesisStartDate).format('DD/MM/YYYY - HH:mm') : '-'}
-              </CustomBlock>
-              {thesis.conclusionConfirmationDate && (
-                <CustomBlock
-                  icon="check-circle"
-                  title="carriera.tesi.date_conclusion_confirmation"
-                  ignoreMoreLines={true}
-                >
-                  {moment(thesis.conclusionConfirmationDate).format('DD/MM/YYYY - HH:mm')}
+    <>
+      <div className="proposals-container">
+        <Row className="mb-3">
+          <Col md={8} lg={8}>
+            <Card className="mb-3 roundCard py-2">
+              <Card.Body className="pt-2 pb-0">
+                <CustomBlock icon="book-open" title="carriera.proposte_di_tesi.topic" ignoreMoreLines={true}>
+                  {thesis.topic.length > 600 ? thesis.topic.substring(0, 597) + '...' : thesis.topic}
                 </CustomBlock>
-              )}
-              {thesis.conclusionRequestDate && (
-                <CustomBlock icon="check-circle" title="carriera.tesi.date_conclusion_requested" ignoreMoreLines={true}>
-                  {moment(thesis.conclusionRequestDate).format('DD/MM/YYYY - HH:mm')}
+                <CustomBlock icon="calendar" title="carriera.tesi.submission_date" ignoreMoreLines={true}>
+                  {thesis.thesisStartDate ? moment(thesis.thesisStartDate).format('DD/MM/YYYY - HH:mm') : '-'}
                 </CustomBlock>
-              )}
-            </Card.Body>
-          </Card>
-          <Row className="mb-3">
-            <Col md={7} lg={7}>
-              {supervisors && (
-                <TeacherContactCard supervisor={thesis.supervisor} coSupervisors={thesis.coSupervisors} />
-              )}
-            </Col>
-            <Col md={5} lg={5}>
-              <Card className="mb-3 roundCard py-2">
-                <Card.Header className="border-0">
-                  <h3 className="thesis-topic">
-                    <i className="fa-solid fa-book fa-sm pe-2" />
-                    {t('carriera.tesi.utilities.title')}
-                  </h3>
-                </Card.Header>
-                <Card.Body className="pt-2 pb-0">
-                  <LinkBlock
-                    icon="copyright"
-                    title="carriera.tesi.utilities.copyright"
-                    link="carriera.tesi.utilities.copyright_link"
-                  />
-                  <LinkBlock
-                    icon="file-lines"
-                    title="carriera.tesi.utilities.thesis_template"
-                    link="https://www.overleaf.com/latex/templates/politecnico-di-torino-thesis-template/cmpmxftwvvbr"
-                  />
-                  <LinkBlock
-                    icon="file-word"
-                    title="carriera.tesi.utilities.thesis_cover_word"
-                    link="carriera.tesi.utilities.thesis_cover_word_link"
-                  />
-                  <LinkBlock
-                    icon="file-image"
-                    title="carriera.tesi.utilities.logo"
-                    link="carriera.tesi.utilities.logo_link"
-                  />
-                  <LinkBlock
-                    icon="link"
-                    title="carriera.tesi.utilities.plagiarism"
-                    link="carriera.tesi.utilities.plagiarism_link"
-                  />
-                  {thesis.company && (
-                    <CustomBlock icon="building" title="carriera.tesi.utilities.letter" ignoreMoreLines={true}>
-                      <a href={API.getThesisCompanyLetterURL(thesis.id)} target="_blank" rel="noopener noreferrer">
-                        {t('carriera.tesi.utilities.letter')}
-                      </a>
-                      -{' '}
-                      <a href={API.getThesisCompanyContactURL(thesis.id)} target="_blank" rel="noopener noreferrer">
-                        {t('carriera.tesi.utilities.contact')}
-                      </a>
-                    </CustomBlock>
-                  )}
-                </Card.Body>
-              </Card>
-            </Col>
-          </Row>
-        </Col>
-        <Col md={4} lg={4}>
-          <Card className="mb-3 roundCard py-2">
-            <Card.Header className="border-0">
-              <h3 className="thesis-topic">
-                <i className="fa-solid fa-arrow-progress fa-sm pe-2" />
-                {t('carriera.tesi.next_steps.title')}
-              </h3>
-            </Card.Header>
-            <Card.Body className="pt-2 pb-0">
-              <ThesisSteps activeStep={'ongoing'} />
-            </Card.Body>
-          </Card>
-        </Col>
-      </Row>
-    </div>
+                {thesis.conclusionConfirmationDate && (
+                  <CustomBlock
+                    icon="check-circle"
+                    title="carriera.tesi.date_conclusion_confirmation"
+                    ignoreMoreLines={true}
+                  >
+                    {moment(thesis.conclusionConfirmationDate).format('DD/MM/YYYY - HH:mm')}
+                  </CustomBlock>
+                )}
+                {thesis.conclusionRequestDate && (
+                  <CustomBlock
+                    icon="check-circle"
+                    title="carriera.tesi.date_conclusion_requested"
+                    ignoreMoreLines={true}
+                  >
+                    {moment(thesis.conclusionRequestDate).format('DD/MM/YYYY - HH:mm')}
+                  </CustomBlock>
+                )}
+              </Card.Body>
+            </Card>
+            <Row className="mb-3">
+              <Col md={7} lg={7}>
+                {supervisors && (
+                  <TeacherContactCard supervisor={thesis.supervisor} coSupervisors={thesis.coSupervisors} />
+                )}
+              </Col>
+              <Col md={5} lg={5}>
+                <Card className="mb-3 roundCard py-2">
+                  <Card.Header className="border-0">
+                    <h3 className="thesis-topic">
+                      <i className="fa-solid fa-book fa-sm pe-2" />
+                      {t('carriera.tesi.utilities.title')}
+                    </h3>
+                  </Card.Header>
+                  <Card.Body className="pt-2 pb-0">
+                    <LinkBlock
+                      icon="copyright"
+                      title="carriera.tesi.utilities.copyright"
+                      link="carriera.tesi.utilities.copyright_link"
+                    />
+                    <LinkBlock
+                      icon="file-lines"
+                      title="carriera.tesi.utilities.thesis_template"
+                      link="https://www.overleaf.com/latex/templates/politecnico-di-torino-thesis-template/cmpmxftwvvbr"
+                    />
+                    <LinkBlock
+                      icon="file-word"
+                      title="carriera.tesi.utilities.thesis_cover_word"
+                      link="carriera.tesi.utilities.thesis_cover_word_link"
+                    />
+                    <LinkBlock
+                      icon="file-image"
+                      title="carriera.tesi.utilities.logo"
+                      link="carriera.tesi.utilities.logo_link"
+                    />
+                    <LinkBlock
+                      icon="link"
+                      title="carriera.tesi.utilities.plagiarism"
+                      link="carriera.tesi.utilities.plagiarism_link"
+                    />
+                    {thesis.company && (
+                      <CustomBlock icon="building" title="carriera.tesi.utilities.letter" ignoreMoreLines={true}>
+                        <a href={API.getThesisCompanyLetterURL(thesis.id)} target="_blank" rel="noopener noreferrer">
+                          {t('carriera.tesi.utilities.letter')}
+                        </a>
+                        -{' '}
+                        <a href={API.getThesisCompanyContactURL(thesis.id)} target="_blank" rel="noopener noreferrer">
+                          {t('carriera.tesi.utilities.contact')}
+                        </a>
+                      </CustomBlock>
+                    )}
+                  </Card.Body>
+                </Card>
+              </Col>
+            </Row>
+          </Col>
+          <Col md={4} lg={4}>
+            <Timeline activeStep={activeStep} statusHistory={thesis.statusHistory} />
+          </Col>
+        </Row>
+      </div>
+    </>
   );
 }
 
@@ -174,5 +161,12 @@ Thesis.propTypes = {
       id: PropTypes.number,
       corporateName: PropTypes.string,
     }),
+    statusHistory: PropTypes.arrayOf(
+      PropTypes.shape({
+        oldStatus: PropTypes.string,
+        newStatus: PropTypes.string.isRequired,
+        note: PropTypes.string,
+      }),
+    ).isRequired,
   }).isRequired,
 };

@@ -1,8 +1,11 @@
 import React, { useContext, useEffect, useState } from 'react';
 
+import { useTranslation } from 'react-i18next';
+
 import API from '../../API';
 import { BodyDataLoadingContext, LoggedStudentContext } from '../../App';
 import CustomBreadcrumb from '../../components/CustomBreadcrumb';
+import CustomHeader from '../../components/CustomHeader';
 import LoadingModal from '../../components/LoadingModal';
 import Thesis from '../../components/Thesis';
 import ThesisApplication from '../../components/ThesisApplication';
@@ -15,6 +18,7 @@ export default function Tesi() {
   const [isLoading, setIsLoading] = useState(true);
   const { loggedStudent } = useContext(LoggedStudentContext);
   const [refreshTrigger, setRefreshTrigger] = useState(0);
+  const { t } = useTranslation();
 
   useEffect(() => {
     setBodyDataLoading(true);
@@ -64,6 +68,15 @@ export default function Tesi() {
   return (
     <>
       <CustomBreadcrumb />
+      <div className="mb-3">
+        <CustomHeader
+          title={
+            <>
+              <i className="fa-solid fa-graduation-cap fa-sm pe-2" /> {t('carriera.tesi.title')}
+            </>
+          }
+        />
+      </div>
       {renderContent()}
     </>
   );

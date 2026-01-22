@@ -11,9 +11,9 @@ import { ThemeContext } from '../App';
 import '../styles/thesis-item.css';
 import '../styles/utilities.css';
 import { getSystemTheme } from '../utils/utils';
-import ApplicationProgressTracker from './ApplicationProgressTracker';
 import CustomBlock from './CustomBlock';
 import TeacherContactCard from './TeacherContactCard';
+import Timeline from './Timeline';
 
 export default function ThesisApplication({ thesisApplication }) {
   const [statusHistory, setStatusHistory] = useState([]);
@@ -21,9 +21,6 @@ export default function ThesisApplication({ thesisApplication }) {
   const [showToast, setShowToast] = useState(false);
   const [canceled, setCanceled] = useState(false);
   const [note, setNote] = useState('');
-  const { theme } = useContext(ThemeContext);
-  const appliedTheme = theme === 'auto' ? getSystemTheme() : theme;
-  const visible = thesisApplication.status !== 'canceled' && thesisApplication.status !== 'rejected';
   const { t } = useTranslation();
 
   useEffect(() => {
@@ -97,30 +94,7 @@ export default function ThesisApplication({ thesisApplication }) {
         <div className="proposals-container">
           <Row className="mb-3">
             <Col>
-              <Card className="mb-3 roundCard py-2">
-                <Card.Header className="border-0">
-                  <h3 className="thesis-topic">
-                    <i className="fa-solid fa-timeline fa-sm pe-2" />
-                    {t('carriera.tesi.progress_application.title')}
-                  </h3>
-                </Card.Header>
-                <Card.Body>
-                  <ApplicationProgressTracker status={thesisApplication.status} statusHistory={statusHistory} />
-                  <div className="mt-3 d-flex justify-content-end gap-3">
-                    {visible && (
-                      <Button variant="outline-danger" size="md" onClick={() => setShowModal(true)}>
-                        <i className="fa-solid fa-ban me-2"></i>
-                        {t('carriera.tesi.cancel_application')}
-                      </Button>
-                    )}
-                    {thesisApplication.status === 'approved' && (
-                      <Button className={`btn-${appliedTheme}`} size="md" onClick={() => setShowModal(true)}>
-                        {t('carriera.tesi.proceed_to_thesis')}
-                      </Button>
-                    )}
-                  </div>
-                </Card.Body>
-              </Card>
+              <Timeline activeStep={thesisApplication.status} statusHistory={statusHistory} />
             </Col>
             <Col>
               <Card className="mb-3 roundCard py-2">
@@ -207,7 +181,6 @@ ThesisApplication.propTypes = {
     supervisor: PropTypes.object.isRequired,
     coSupervisors: PropTypes.arrayOf(PropTypes.object),
   }).isRequired,
-  startThesis: PropTypes.func.isRequired,
 };
 
 ThesisCancelModal.propTypes = {
