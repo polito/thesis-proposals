@@ -69,38 +69,18 @@ export default function Tesi({ initialActiveTab }) {
 
   useEffect(() => {
     setIsLoading(true);
-
-    API.getLoggedStudentThesis()
-      .then(data => {
-        setThesis(data);
-        setThesisApplication(null);
+    if (!loggedStudent) return;
+    Promise.all([API.getLoggedStudentThesis(), API.getLastStudentApplication(), API.checkStudentEligibility()])
+      .then(([fetchedThesis, fetchedThesisApplication, eligibility]) => {
+        setThesis(fetchedThesis);
+        setThesisApplication(fetchedThesisApplication);
+        setIsEligible(eligibility.eligible);
       })
       .catch(error => {
-        console.error('Error fetching thesis:', error);
-        setThesis(null);
-        // Only if thesis fetch fails, fetch the application
-        API.getLastStudentApplication()
-          .then(appData => {
-            setThesisApplication(appData);
-          })
-          .catch(appError => {
-            console.error('Error fetching thesis application:', appError);
-            setThesisApplication(null);
-          });
+        console.error('Error fetching thesis or thesis application data:', error);
       })
       .finally(() => {
-        // Check eligibility regardless of thesis/application result
-        API.checkStudentEligibility()
-          .then(eligibleData => {
-            setIsEligible(eligibleData.eligible);
-          })
-          .catch(eligibilityError => {
-            console.error('Error checking student eligibility:', eligibilityError);
-            setIsEligible(false);
-          })
-          .finally(() => {
-            setIsLoading(false);
-          });
+        setIsLoading(false);
       });
   }, [loggedStudent]);
 
@@ -114,7 +94,7 @@ export default function Tesi({ initialActiveTab }) {
             return (
               <Thesis
                 thesis={thesis}
-                thesisApplication={thesisApplication}
+                thesisApplication={thesis ? null : thesisApplication}
                 showModal={showModal}
                 setShowModal={setShowModal}
                 showRequestModal={showRequestModal}
@@ -134,7 +114,7 @@ export default function Tesi({ initialActiveTab }) {
 
   return (
     <>
-      <CustomBreadcrumb />
+      <CustomBreadcrumb activeTab={tabs.filter(tab => tab.key === activeTab)[0].label} />
       <div className="proposal-container justify-content-between d-flex" style={{ paddingRight: '12px' }}>
         <CustomHeader title={t('carriera.tesi.title')} action={() => navigate('/carriera')} />
         {thesis &&
@@ -206,7 +186,7 @@ export default function Tesi({ initialActiveTab }) {
               padding: '0 10px',
             }}
           >
-            <i className="fa-regular fa-file-lines" /> {t('carriera.tesi.tabs.application_form')}
+            <i className="fa-regular fa-file-lines" /> {t('carriera.tesi.application_form')}
           </Button>
         )}
       </div>

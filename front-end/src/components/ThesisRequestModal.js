@@ -8,6 +8,7 @@ import PropTypes from 'prop-types';
 
 import API from '../API';
 import { ThemeContext } from '../App';
+import '../styles/utilities.css';
 import { getSystemTheme } from '../utils/utils';
 import CompanySelect from './CompanySelect';
 import LoadingModal from './LoadingModal';
@@ -40,7 +41,6 @@ export default function ThesisRequestModal(props) {
     };
 
     setErrors(newErrors);
-    setShow(false);
 
     if (!newErrors.topic && !newErrors.supervisor && charCount <= maxCharCount) {
       API.createThesisApplication({
@@ -50,6 +50,7 @@ export default function ThesisRequestModal(props) {
         company: company ? companies.find(comp => comp.id === company.value) : null,
       })
         .then(() => {
+          setShow(false);
           setTimeout(() => {
             navigate('/carriera/tesi');
           }, 5000);
@@ -86,7 +87,7 @@ export default function ThesisRequestModal(props) {
   }
 
   return (
-    <Modal show={show} onHide={() => setShow(false)} centered className="wide-modal">
+    <Modal className="modal-xxl" show={show} onHide={() => setShow(false)} centered>
       <Modal.Header closeButton>
         <Modal.Title>
           <i className="fa-regular fa-file-lines fa-lg pe-2" />
@@ -137,6 +138,11 @@ export default function ThesisRequestModal(props) {
               isMulti={false}
               placeholder={t('carriera.richiesta_tesi.select_supervisor_placeholder')}
             />
+            {errors.supervisor && (
+              <div className="text-danger mt-2">
+                <small>{t('carriera.richiesta_tesi.supervisor_required')}</small>
+              </div>
+            )}
           </Form.Group>
           <Form.Group className="mb-3" controlId="coSupervisorsSelect">
             <Form.Label>
@@ -179,7 +185,7 @@ export default function ThesisRequestModal(props) {
         <Button className="modal-cancel mb-3" size="md" onClick={() => setShow(false)}>
           {t('carriera.proposta_di_tesi.chiudi')}
         </Button>
-        <Button className={`btn-primary-${appliedTheme}`} onClick={handleSubmit} disabled={!topic || !supervisor}>
+        <Button className={`btn-primary-${appliedTheme}`} onClick={handleSubmit}>
           <i className="fa-solid fa-paper-plane fa-lg pe-2" />
           {t('carriera.richiesta_tesi.submit_request')}
         </Button>

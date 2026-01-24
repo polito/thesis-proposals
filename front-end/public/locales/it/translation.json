@@ -196,7 +196,8 @@
                 "title": "Cancella tesi",
                 "body": "Sei sicuro di voler cancellare la tua tesi? L'azione non può essere annullata.",
                 "confirm_text": "Si, cancella"
-            }
+            },
+            "application_form": "Richiesta tesi"
         },
         "richiesta_tesi": {
             "title": "Richiesta Tesi",

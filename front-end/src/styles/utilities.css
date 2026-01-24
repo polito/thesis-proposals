@@ -368,6 +368,12 @@ body {
   color: var(--text-400) !important;
 }
 
+.modal-xxl .modal-content {
+  max-width: 70vw;
+  min-width: 550px;
+  margin: auto;
+}
+
 /*scrollbar si vede solo se sopra brakpoint lg*/
 @media (max-width: 991px) {
   ::-webkit-scrollbar {
