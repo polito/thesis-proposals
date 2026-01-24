@@ -26,11 +26,6 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         field: 'new_status',
       },
-      note: {
-        type: DataTypes.STRING(255),
-        allowNull: true,
-        field: 'note',
-      },
       change_date: {
         type: DataTypes.DATE,
         allowNull: false,

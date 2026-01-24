@@ -5,6 +5,8 @@ import Form from 'react-bootstrap/Form';
 import InputGroup from 'react-bootstrap/InputGroup';
 import { useTranslation } from 'react-i18next';
 
+import PropTypes from 'prop-types';
+
 import useThesisProposalsState from '../hooks/useThesisProposalsState';
 import '../styles/searchbar.css';
 import '../styles/thesis-proposals.css';
@@ -17,8 +19,9 @@ import ProposalsNotFound from './ProposalsNotFound';
 import SegmentedControl from './SegmentedControl';
 import SortDropdown from './SortDropdown';
 import { ThesisItem } from './ThesisItem';
+import ThesisRequestModal from './ThesisRequestModal';
 
-export default function ThesisProposals() {
+export default function ThesisProposals({ showRequestModal, setShowRequestModal }) {
   const { t } = useTranslation();
   const {
     count,
@@ -174,6 +177,12 @@ export default function ThesisProposals() {
           )}
         </>
       )}
+      <ThesisRequestModal show={showRequestModal} setShow={setShowRequestModal} />
     </div>
   );
 }
+
+ThesisProposals.propTypes = {
+  showRequestModal: PropTypes.bool.isRequired,
+  setShowRequestModal: PropTypes.func.isRequired,
+};

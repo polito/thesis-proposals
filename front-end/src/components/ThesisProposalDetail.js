@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 
 import { Button, Card, Col, Modal, Row, Toast } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
@@ -9,7 +9,7 @@ import 'moment/locale/it';
 import PropTypes from 'prop-types';
 
 import API from '../API';
-import { ThemeContext } from '../App';
+import { LoggedStudentContext, ThemeContext } from '../App';
 import '../styles/custom-modal.css';
 import '../styles/custom-toast.css';
 import '../styles/text.css';
@@ -17,6 +17,7 @@ import '../styles/utilities.css';
 import { getSystemTheme } from '../utils/utils';
 import CustomBadge from './CustomBadge';
 import CustomBlock from './CustomBlock';
+import LoadingModal from './LoadingModal';
 
 moment.locale('it');
 
@@ -40,15 +41,29 @@ function ThesisProposalDetail(props) {
     types,
   } = props.thesisProposal;
 
-  const isEligible = props.isEligible;
-  const setIsEligible = props.setIsEligible;
-
   const supervisors = [supervisor, ...internalCoSupervisors];
   const [sending, setSending] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [showToast, setShowToast] = useState(false);
+  const [isEligible, setIsEligible] = useState(false);
   const [success, setSuccess] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+  const { loggedStudent } = useContext(LoggedStudentContext);
   const { t } = useTranslation();
+
+  useEffect(() => {
+    API.checkStudentEligibility()
+      .then(data => {
+        setIsEligible(data.eligible);
+      })
+      .catch(error => {
+        console.error('Error checking student eligibility:', error);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  }, [loggedStudent]);
+
   const sendApplication = () => {
     if (sending) return;
     const applicationData = {
@@ -84,6 +99,8 @@ function ThesisProposalDetail(props) {
 
   if (sending) {
     return <div>{'Invio candidatura in corso...'}</div>;
+  } else if (isLoading) {
+    return <LoadingModal show={isLoading} onHide={() => setIsLoading(false)} />;
   } else {
     return (
       <>
@@ -124,7 +141,7 @@ function ThesisProposalDetail(props) {
           </Toast>
         </div>
         <div className="proposals-container">
-          <Card className="mb-3 roundCard py-2">
+          <Card className="mb-3 roundCard py-2 py-2">
             {topic && (
               <Card.Header className="border-0">
                 <Row className="d-flex justify-content-between align-items-start">
@@ -189,14 +206,14 @@ function ThesisProposalDetail(props) {
                 </CustomBlock>
               )}
               {creationDate && (
-                <CustomBlock icon="calendar" title="carriera.proposte_di_tesi.creationDate">
+                <CustomBlock icon="calendar" title="carriera.proposte_di_tesi.creation_date">
                   {moment(creationDate).format('DD/MM/YYYY')}
                 </CustomBlock>
               )}
               <div className="d-flex align-items-start justify-content-between">
                 {expirationDate && (
                   <div className="flex-grow-1 me-3">
-                    <CustomBlock icon="calendar-clock" title="carriera.proposte_di_tesi.expirationDate">
+                    <CustomBlock icon="calendar-clock" title="carriera.proposte_di_tesi.expiration_date">
                       {moment(expirationDate).format('DD/MM/YYYY')}
                     </CustomBlock>
                   </div>
@@ -280,8 +297,6 @@ ThesisProposalDetail.propTypes = {
     keywords: PropTypes.array,
     types: PropTypes.array,
   }).isRequired,
-  isEligible: PropTypes.bool.isRequired,
-  setIsEligible: PropTypes.func.isRequired,
 };
 
 ApplicationButton.propTypes = {

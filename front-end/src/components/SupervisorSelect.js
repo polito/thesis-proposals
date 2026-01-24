@@ -1,40 +1,32 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
 import Select from 'react-select';
 
 import PropTypes from 'prop-types';
 
-import API from '../API';
 import CustomBadge from './CustomBadge';
 
-export default function SupervisorSelect({ selected, setSelected, isMulti, placeholder, isClearable }) {
-  const [options, setOptions] = useState([]);
+export default function SupervisorSelect({ options, selected, setSelected, isMulti, placeholder }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-
-  useEffect(() => {
-    API.getThesisProposalsTeachers().then(data => {
-      setOptions(
-        data.map(item => ({
-          value: item.id,
-          label: `${item.lastName} ${item.firstName}`,
-          variant: 'teacher',
-        })),
-      );
-    });
-  }, []);
 
   return (
     <div>
       <Select
         isMulti={isMulti}
-        isClearable={isClearable}
+        isClearable={!isMulti}
         components={{ SingleValue: CustomSingleValue, MultiValue: CustomMultiValue, IndicatorSeparator: () => null }}
         name="supervisors"
         defaultValue={selected}
         options={options}
         placeholder={isMenuOpen ? '' : placeholder}
         value={selected}
-        onChange={selected => setSelected(selected)}
+        onChange={selected => {
+          if (isMulti) {
+            if (!selected || selected.length <= 4) setSelected(selected);
+          } else {
+            setSelected(selected);
+          }
+        }}
         onMenuOpen={() => setIsMenuOpen(true)}
         onMenuClose={() => setIsMenuOpen(false)}
         className="multi-select"
@@ -82,9 +74,9 @@ CustomSingleValue.propTypes = {
 };
 
 SupervisorSelect.propTypes = {
-  selected: PropTypes.array,
+  options: PropTypes.array.isRequired,
+  selected: PropTypes.oneOfType([PropTypes.array, PropTypes.object]).isRequired,
   setSelected: PropTypes.func.isRequired,
   isMulti: PropTypes.bool,
   placeholder: PropTypes.string,
-  isClearable: PropTypes.bool,
 };

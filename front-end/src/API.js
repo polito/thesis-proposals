@@ -178,11 +178,10 @@ async function updateThesisApplicationStatus(updateData) {
   }
 }
 
-async function cancelThesisApplication({ id: applicationId, note }) {
+async function cancelThesisApplication({ applicationId }) {
   try {
     const response = await axios.post(`${URL}/thesis-applications/cancel`, {
       id: applicationId,
-      note: note,
     });
     return response.data;
   } catch (error) {

@@ -4,6 +4,7 @@ const studentSchema = require('./Student');
 const companySchema = require('./Company');
 const teacherSchema = require('./Teacher');
 const thesisApplicationStatusHistorySchema = require('./ThesisApplicationStatusHistory');
+const thesisStatusSchema = require('./ThesisStatus');
 
 const thesisSchema = z
   .object({
@@ -21,7 +22,8 @@ const thesisSchema = z
     supervisor: teacherSchema,
     co_supervisors: z.array(teacherSchema).default([]).nullable().optional(),
     company: companySchema.nullable().optional(),
-    status_history: z.array(thesisApplicationStatusHistorySchema).optional(),
+    application_status_history: z.array(thesisApplicationStatusHistorySchema).optional(),
+    thesis_status: thesisStatusSchema,
     thesis_start_date: z.string().datetime(),
     thesis_conclusion_request_date: z.string().datetime().nullable().optional(),
     thesis_conclusion_confirmation_date: z.string().datetime().nullable().optional(),
@@ -41,7 +43,8 @@ const thesisSchema = z
     supervisor: thesis.supervisor,
     coSupervisors: thesis.co_supervisors,
     company: thesis.company,
-    statusHistory: thesis.status_history,
+    applicationStatusHistory: thesis.application_status_history,
+    thesisStatus: thesis.thesis_status,
     thesisStartDate: thesis.thesis_start_date,
     thesisConclusionRequestDate: thesis.thesis_conclusion_request_date,
     thesisConclusionConfirmationDate: thesis.thesis_conclusion_confirmation_date,

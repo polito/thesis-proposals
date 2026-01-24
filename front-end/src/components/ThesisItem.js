@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 
 import { Button, Card, Col, Row } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import moment from 'moment';
 import 'moment/locale/it';
@@ -18,17 +18,18 @@ function ThesisItem(props) {
   const teachers = [props.supervisor, ...props.internalCoSupervisors];
   const { theme } = useContext(ThemeContext);
   const appliedTheme = theme === 'auto' ? getSystemTheme() : theme;
+  const navigate = useNavigate();
 
   const { t } = useTranslation();
   return (
     <Col xs={12} sm={12} md={12} lg={6} xl={6} className="mb-3">
-      <Card className="mb-3 roundCard h-100 py-2">
+      <Card className="mb-3 roundCard py-2 h-100 ">
         <Card.Header className="border-0">
           <Row className="d-flex justify-content-between align-items-start">
             <Col xs={8} sm={8} md={9} lg={8} xl={9}>
               <h3 className="thesis-topic">{props.topic}</h3>
             </Col>
-            <Col xs={4} sm={4} md={3} lg={4} xl={3} className="text-end">
+            <Col xs={4} sm={4} md={3} lg={4} xl={3} className="justify-content-end d-flex">
               <CustomBadge variant="status" content={props.expirationDate} />
             </Col>
           </Row>
@@ -71,11 +72,13 @@ function ThesisItem(props) {
             <i className="fa-regular fa-calendar-clock" />
             {t('carriera.proposte_di_tesi.expires')}: <span>{moment(props.expirationDate).format('DD/MM/YYYY')}</span>
           </div>
-          <Link to={`${props.id}`} style={{ textDecoration: 'none' }}>
-            <Button className={`btn-${appliedTheme}`} size="md">
-              {t('carriera.proposte_di_tesi.show_more')}
-            </Button>
-          </Link>
+          <Button
+            className={`btn-${appliedTheme}`}
+            size="md"
+            onClick={() => navigate(`/carriera/tesi/proposta_di_tesi/${props.id}`)}
+          >
+            {t('carriera.proposte_di_tesi.show_more')}
+          </Button>
         </Card.Footer>
       </Card>
     </Col>

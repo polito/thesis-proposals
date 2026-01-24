@@ -212,7 +212,6 @@ CREATE TABLE IF NOT EXISTS thesis_application_status_history(
     thesis_application_id INT NOT NULL,
     old_status ENUM('pending', 'approved', 'rejected', 'canceled'),
     new_status ENUM('pending', 'approved', 'rejected', 'canceled') NOT NULL,
-    note VARCHAR(255),
     change_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (id),
     FOREIGN KEY (thesis_application_id) REFERENCES thesis_application(id) ON DELETE CASCADE
@@ -242,6 +241,7 @@ CREATE TABLE IF NOT EXISTS thesis(
     thesis_start_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     thesis_conclusion_request_date DATETIME,
     thesis_conclusion_confirmation_date DATETIME,
+    thesis_status ENUM('ongoing', 'conclusion_requested', 'conclusion_approved', 'conclusion_rejected') NOT NULL DEFAULT 'ongoing',
     FOREIGN KEY (company_id) REFERENCES company(id) ON DELETE RESTRICT, -- RESTRICT policy in order to pay attention to the deletion of a company
     FOREIGN KEY (student_id) REFERENCES student(id) ON DELETE RESTRICT, -- RESTRICT policy because why should you delete a student?
     FOREIGN KEY (thesis_application_id) REFERENCES thesis_application(id) ON DELETE CASCADE, -- CASCADE policy to delete the thesis if the application is deleted

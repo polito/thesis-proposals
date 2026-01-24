@@ -351,13 +351,13 @@ export default function CustomBadge({ variant, content, type, filters, applyFilt
       case 'app_status':
         switch (content.toLowerCase()) {
           case 'pending':
-            return t('carriera.tesi.progress_application.pending');
+            return t('carriera.tesi.thesis_progress.pending');
           case 'approved':
-            return t('carriera.tesi.progress_application.approved');
+            return t('carriera.tesi.thesis_progress.approved');
           case 'rejected':
-            return t('carriera.tesi.progress_application.rejected');
+            return t('carriera.tesi.thesis_progress.rejected');
           case 'canceled':
-            return t('carriera.tesi.progress_application.canceled');
+            return t('carriera.tesi.thesis_progress.canceled');
           default:
             return t('carriera.proposta_di_tesi.badge_errato');
         }

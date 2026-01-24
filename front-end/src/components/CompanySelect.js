@@ -1,32 +1,18 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
 import Select from 'react-select';
 
 import PropTypes from 'prop-types';
 
-import API from '../API';
 import CustomBadge from './CustomBadge';
 
-export default function CompanySelect({ selected, setSelected, isMulti, placeholder }) {
-  const [options, setOptions] = useState([]);
+export default function CompanySelect({ options, selected, setSelected, placeholder }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-
-  useEffect(() => {
-    API.getCompanies().then(data => {
-      setOptions(
-        data.map(item => ({
-          value: item.id,
-          label: item.corporateName,
-          variant: 'external-company',
-        })),
-      );
-    });
-  }, []);
 
   return (
     <div>
       <Select
-        isMulti={isMulti}
+        isMulti={false}
         isClearable={true}
         components={{ SingleValue: CustomSingleValue, IndicatorSeparator: () => null }}
         name="companies"
@@ -60,8 +46,8 @@ CustomSingleValue.propTypes = {
 };
 
 CompanySelect.propTypes = {
-  selected: PropTypes.array,
+  options: PropTypes.array.isRequired,
+  selected: PropTypes.object,
   setSelected: PropTypes.func.isRequired,
-  isMulti: PropTypes.bool,
   placeholder: PropTypes.string,
 };

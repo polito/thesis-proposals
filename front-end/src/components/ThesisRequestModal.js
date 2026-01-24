@@ -1,0 +1,193 @@
+import React, { useContext, useEffect, useState } from 'react';
+
+import { Button, Form, FormText, Modal } from 'react-bootstrap';
+import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
+
+import PropTypes from 'prop-types';
+
+import API from '../API';
+import { ThemeContext } from '../App';
+import { getSystemTheme } from '../utils/utils';
+import CompanySelect from './CompanySelect';
+import LoadingModal from './LoadingModal';
+import SupervisorSelect from './SupervisorSelect';
+
+export default function ThesisRequestModal(props) {
+  const { show, setShow } = props;
+  const { t } = useTranslation();
+  const { theme } = useContext(ThemeContext);
+  const appliedTheme = theme === 'auto' ? getSystemTheme() : theme;
+  const [isLoading, setIsLoading] = useState(false);
+  const [topic, setTopic] = useState('');
+  const [supervisor, setSupervisor] = useState(null);
+  const [coSupervisors, setCoSupervisors] = useState([]);
+  const [company, setCompany] = useState(null);
+  const [teachers, setTeachers] = useState([]);
+  const [companies, setCompanies] = useState([]);
+  const maxCharCount = 1500;
+  const charCount = topic.length;
+  const navigate = useNavigate();
+  const [errors, setErrors] = useState({
+    topic: false,
+    supervisor: false,
+  });
+
+  const handleSubmit = () => {
+    const newErrors = {
+      topic: !topic || topic.trim() === '' || charCount > maxCharCount,
+      supervisor: !supervisor,
+    };
+
+    setErrors(newErrors);
+    setShow(false);
+
+    if (!newErrors.topic && !newErrors.supervisor && charCount <= maxCharCount) {
+      API.createThesisApplication({
+        topic,
+        supervisor: teachers.find(teacher => teacher.id === supervisor.value),
+        coSupervisors: coSupervisors.map(coSup => teachers.find(teacher => teacher.id === coSup.value)).filter(Boolean),
+        company: company ? companies.find(comp => comp.id === company.value) : null,
+      })
+        .then(() => {
+          setTimeout(() => {
+            navigate('/carriera/tesi');
+          }, 5000);
+        })
+        .catch(error => {
+          console.error('Error submitting thesis application:', error);
+        });
+    }
+  };
+
+  useEffect(() => {
+    Promise.all([
+      API.getThesisProposalsTeachers()
+        .then(data => {
+          setTeachers(data);
+        })
+        .catch(error => {
+          console.error('Error fetching thesis proposals teachers:', error);
+          setTeachers([]);
+        }),
+      API.getCompanies()
+        .then(data => {
+          setCompanies(data);
+        })
+        .catch(error => {
+          console.error('Error fetching companies:', error);
+          setCompanies([]);
+        }),
+    ]);
+  }, []);
+
+  if (isLoading) {
+    return <LoadingModal show={isLoading} onHide={() => setIsLoading(false)} />;
+  }
+
+  return (
+    <Modal show={show} onHide={() => setShow(false)} centered className="wide-modal">
+      <Modal.Header closeButton>
+        <Modal.Title>
+          <i className="fa-regular fa-file-lines fa-lg pe-2" />
+          {t('carriera.richiesta_tesi.title')}
+        </Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        <Form>
+          <Form.Group className="mb-3" controlId="thesisTopic">
+            <Form.Label>{t('carriera.richiesta_tesi.topic')}</Form.Label>
+            <Form.Control
+              as="textarea"
+              rows={4}
+              className={`form-control textarea-themed ${errors.topic ? 'is-invalid' : ''}`}
+              value={topic}
+              onChange={e => setTopic(e.target.value)}
+              placeholder={t('carriera.richiesta_tesi.topic_placeholder')}
+            />
+            <div className="d-flex justify-content-between align-items-center mt-2 flex-nowrap">
+              {errors.topic && (
+                <div className="invalid-feedback d-block">
+                  {maxCharCount < charCount
+                    ? t('carriera.richiesta_tesi.too_long')
+                    : t('carriera.richiesta_tesi.topic_required')}
+                </div>
+              )}
+              <FormText className={`ms-auto text-nowrap ${maxCharCount - charCount < 150 ? 'text-danger' : ''}`}>
+                {maxCharCount - charCount}{' '}
+                {t('carriera.richiesta_tesi.chars_left', { count: charCount, max: maxCharCount })}
+              </FormText>
+            </div>
+          </Form.Group>
+
+          <Form.Group className="mb-3" controlId="supervisorSelect">
+            <Form.Label>
+              <i className="fa-regular fa-user fa-lg pe-2" /> {t('carriera.richiesta_tesi.select_supervisor')}
+            </Form.Label>
+            <SupervisorSelect
+              options={teachers
+                .filter(teacher => !coSupervisors.some(co => co.value === teacher.id))
+                .map(item => ({
+                  value: item.id,
+                  label: `${item.lastName} ${item.firstName}`,
+                  variant: 'teacher',
+                }))}
+              selected={supervisor}
+              setSelected={setSupervisor}
+              isMulti={false}
+              placeholder={t('carriera.richiesta_tesi.select_supervisor_placeholder')}
+            />
+          </Form.Group>
+          <Form.Group className="mb-3" controlId="coSupervisorsSelect">
+            <Form.Label>
+              <i className="fa-regular fa-users fa-lg pe-2" /> {t('carriera.richiesta_tesi.select_co_supervisors')}
+            </Form.Label>
+            <SupervisorSelect
+              options={teachers
+                .filter(teacher => teacher.id !== (supervisor ? supervisor.value : null))
+                .map(item => ({
+                  value: item.id,
+                  label: `${item.lastName} ${item.firstName}`,
+                  variant: 'teacher',
+                }))}
+              selected={coSupervisors}
+              setSelected={setCoSupervisors}
+              isMulti={true}
+              placeholder={t('carriera.richiesta_tesi.select_co_supervisors_placeholder')}
+            />
+          </Form.Group>
+
+          <Form.Group className="mb-3" controlId="companySelect">
+            <Form.Label>
+              <i className="fa-regular fa-building fa-lg pe-2" />
+              {t('carriera.richiesta_tesi.select_company')}
+            </Form.Label>
+            <CompanySelect
+              options={companies.map(company => ({
+                value: company.id,
+                label: company.corporateName,
+                variant: 'external-company',
+              }))}
+              selected={company}
+              setSelected={setCompany}
+              placeholder={t('carriera.richiesta_tesi.select_company_placeholder')}
+            />
+          </Form.Group>
+        </Form>
+      </Modal.Body>
+      <Modal.Footer>
+        <Button className="modal-cancel mb-3" size="md" onClick={() => setShow(false)}>
+          {t('carriera.proposta_di_tesi.chiudi')}
+        </Button>
+        <Button className={`btn-primary-${appliedTheme}`} onClick={handleSubmit} disabled={!topic || !supervisor}>
+          <i className="fa-solid fa-paper-plane fa-lg pe-2" />
+          {t('carriera.richiesta_tesi.submit_request')}
+        </Button>
+      </Modal.Footer>
+    </Modal>
+  );
+}
+ThesisRequestModal.propTypes = {
+  show: PropTypes.bool.isRequired,
+  setShow: PropTypes.func.isRequired,
+};

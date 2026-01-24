@@ -19,42 +19,42 @@ export default function Timeline({ activeStep, statusHistory }) {
 
   const firstStep = {
     key: 'pending',
-    label: t('carriera.tesi.progress_application.pending'),
-    description: t('carriera.tesi.progress_application.pending_description'),
+    label: t('carriera.tesi.thesis_progress.pending'),
+    description: t('carriera.tesi.thesis_progress.pending_description'),
   };
 
   // Step 2: Outcome della application (dipende da applicationStatus)
   const getSecondStep = () => {
     switch (activeStep) {
       case 'approved':
-      case 'step_1':
-      case 'step_2':
-      case 'step_3':
-      case 'step_4':
-      case 'step_5':
+      case 'ongoing':
+      case 'conclusion_request':
+      case 'almalaurea':
+      case 'final_exam':
+      case 'final_thesis':
         return {
           key: 'approved',
-          label: t('carriera.tesi.progress_application.approved'),
-          description: t('carriera.tesi.progress_application.approved_description'),
+          label: t('carriera.tesi.thesis_progress.approved'),
+          description: t('carriera.tesi.thesis_progress.approved_description'),
           date: activeStep !== 'approved',
         };
       case 'rejected':
         return {
           key: 'rejected',
-          label: t('carriera.tesi.progress_application.rejected'),
-          description: t('carriera.tesi.progress_application.rejected_description'),
+          label: t('carriera.tesi.thesis_progress.rejected'),
+          description: t('carriera.tesi.thesis_progress.rejected_description'),
         };
       case 'canceled':
         return {
           key: 'canceled',
-          label: t('carriera.tesi.progress_application.canceled'),
-          description: t('carriera.tesi.progress_application.canceled_description'),
+          label: t('carriera.tesi.thesis_progress.canceled'),
+          description: t('carriera.tesi.thesis_progress.canceled_description'),
         };
       default:
         return {
           key: 'outcome',
-          label: t('carriera.tesi.progress_application.outcome'),
-          description: t('carriera.tesi.progress_application.outcome_description'),
+          label: t('carriera.tesi.thesis_progress.outcome'),
+          description: t('carriera.tesi.thesis_progress.outcome_description'),
         };
     }
   };
@@ -63,29 +63,29 @@ export default function Timeline({ activeStep, statusHistory }) {
   const getThesisSteps = () => {
     return [
       {
-        key: 'step_1',
-        label: t('carriera.tesi.next_steps.step_1_title'),
-        description: t('carriera.tesi.next_steps.step_1'),
+        key: 'ongoing',
+        label: t('carriera.tesi.thesis_progress.ongoing_title'),
+        description: t('carriera.tesi.thesis_progress.ongoing'),
       },
       {
-        key: 'step_2',
-        label: t('carriera.tesi.next_steps.step_2_title'),
-        description: t('carriera.tesi.next_steps.step_2'),
+        key: 'conclusion_request',
+        label: t('carriera.tesi.thesis_progress.conclusion_request_title'),
+        description: t('carriera.tesi.thesis_progress.conclusion_request'),
       },
       {
-        key: 'step_3',
-        label: t('carriera.tesi.next_steps.step_3_title'),
-        description: t('carriera.tesi.next_steps.step_3'),
+        key: 'almalaurea',
+        label: t('carriera.tesi.thesis_progress.almalaurea_title'),
+        description: t('carriera.tesi.thesis_progress.almalaurea'),
       },
       {
-        key: 'step_4',
-        label: t('carriera.tesi.next_steps.step_4_title'),
-        description: t('carriera.tesi.next_steps.step_4'),
+        key: 'final_exam',
+        label: t('carriera.tesi.thesis_progress.final_exam_title'),
+        description: t('carriera.tesi.thesis_progress.final_exam'),
       },
       {
-        key: 'step_5',
-        label: t('carriera.tesi.next_steps.step_5_title'),
-        description: t('carriera.tesi.next_steps.step_5'),
+        key: 'final_thesis',
+        label: t('carriera.tesi.thesis_progress.final_thesis_title'),
+        description: t('carriera.tesi.thesis_progress.final_thesis'),
       },
     ];
   };
@@ -105,16 +105,16 @@ export default function Timeline({ activeStep, statusHistory }) {
 
     switch (key) {
       case 'pending':
-      case 'approved':
       case 'rejected':
       case 'canceled':
+      case 'approved':
         historyEntry = statusHistory ? getHistoryForStatus(key) : null;
         circleClass = isActive ? key : 'inactive';
         titleClass = isActive ? `active active-${key}` : '';
         break;
       default:
         circleClass = isActive ? 'pending' : 'inactive';
-        titleClass = isActive ? `active active-${key}` : '';
+        titleClass = titleClass = isActive ? `active active-${key}` : '';
         historyEntry = null;
     }
 
@@ -122,7 +122,7 @@ export default function Timeline({ activeStep, statusHistory }) {
       <div key={key} className="progress-step">
         <div className="progress-step-marker">
           <div className={`progress-step-circle ${circleClass}`}>
-            {isActive && key === 'approved' && <i className="fa-solid fa-check" />}
+            {isActive && key === 'approved' && <i className="fa-solid fa-check align-vertical-center" />}
             {isActive && key === 'rejected' && <i className="fa-solid fa-xmark" />}
             {isActive && key === 'canceled' && <i className="fa-solid fa-ban" />}
           </div>
@@ -153,11 +153,11 @@ export default function Timeline({ activeStep, statusHistory }) {
                     <i className="fa-solid fa-comment me-2" />
                     {key !== 'canceled'
                       ? expandedNote === key
-                        ? t('carriera.tesi.progress_application.hide_supervisor_note')
-                        : t('carriera.tesi.progress_application.show_supervisor_note')
+                        ? t('carriera.tesi.thesis_progress.hide_supervisor_note')
+                        : t('carriera.tesi.thesis_progress.show_supervisor_note')
                       : expandedNote === key
-                        ? t('carriera.tesi.progress_application.hide_note')
-                        : t('carriera.tesi.progress_application.show_note')}
+                        ? t('carriera.tesi.thesis_progress.hide_note')
+                        : t('carriera.tesi.thesis_progress.show_note')}
                     <i className={`fa-solid fa-chevron-${expandedNote === key ? 'up' : 'down'} ms-2`} />
                   </div>
                   {expandedNote === key && (
@@ -175,7 +175,7 @@ export default function Timeline({ activeStep, statusHistory }) {
   };
 
   return (
-    <Card className="mb-3 roundCard py-2">
+    <Card className="mb-3 roundCard py-2 ">
       <Card.Header className="border-0">
         <h3 className="thesis-topic">
           <i className="fa-solid fa-timeline fa-sm pe-2" />
@@ -195,11 +195,11 @@ Timeline.propTypes = {
     'approved',
     'rejected',
     'canceled',
-    'step_1',
-    'step_2',
-    'step_3',
-    'step_4',
-    'step_5',
+    'ongoing',
+    'conclusion_request',
+    'almalaurea',
+    'final_exam',
+    'final_thesis',
   ]).isRequired,
   statusHistory: PropTypes.arrayOf(
     PropTypes.shape({

@@ -9,11 +9,14 @@ const {
 const updateThesisApplicationStatus = async (req, res) => {
   try {
     // Example logic to update a thesis application
-    const { id, new_status, note } = req.body;
+    const { id, new_status } = req.body;
 
     const application = await ThesisApplication.findByPk(id);
     if (!application) {
       return res.status(404).json({ error: 'Thesis application not found' });
+    }
+    if (application.status === new_status) {
+      return res.status(400).json({ error: 'New status must be different from the current status' });
     }
     const t = await sequelize.transaction();
     await ThesisApplicationStatusHistory.create(
@@ -21,7 +24,6 @@ const updateThesisApplicationStatus = async (req, res) => {
         thesis_application_id: id,
         old_status: application.status,
         new_status: new_status,
-        note: note || null,
       },
       { transaction: t },
     );
@@ -61,9 +63,9 @@ const updateThesisApplicationStatus = async (req, res) => {
           await ThesisSupervisorCoSupervisor.create(coSupervisorEntry, { transaction: t });
         }
       }
-      await t.commit();
       res.status(200).json(newThesis);
     }
+    await t.commit();
   } catch (error) {
     console.error('Error updating thesis application status:', error);
     res.status(500).json({ error: 'Internal server error' });

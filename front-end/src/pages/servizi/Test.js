@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 
-import { Button, ButtonGroup, Card, Form, Modal } from 'react-bootstrap';
+import { Button, ButtonGroup, Card, Modal } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 
 import API from '../../API';
@@ -13,9 +13,9 @@ export default function Test() {
   const [thesisApplications, setThesisApplications] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
+  const [statusChanged, setStatusChanged] = useState(false);
   const [selectedApplication, setSelectedApplication] = useState(null);
   const [selectedStatus, setSelectedStatus] = useState(null);
-  const [note, setNote] = useState('');
   const { t } = useTranslation();
 
   useEffect(() => {
@@ -32,14 +32,14 @@ export default function Test() {
       })
       .finally(() => {
         setIsLoading(false);
+        setStatusChanged(false);
         setBodyDataLoading(false);
       });
-  }, [setBodyDataLoading]);
+  }, [setBodyDataLoading, statusChanged]);
 
   const openStatusChangeModal = (application, newStatus) => {
     setSelectedApplication(application);
     setSelectedStatus(newStatus);
-    setNote('');
     setShowModal(true);
   };
 
@@ -47,24 +47,18 @@ export default function Test() {
     setShowModal(false);
     setSelectedApplication(null);
     setSelectedStatus(null);
-    setNote('');
   };
 
   const handleConfirmStatusChange = async () => {
     try {
       console.log(`Changing application ${selectedApplication.id} to status: ${selectedStatus}`);
-      console.log(`Note: ${note}`);
       await API.updateThesisApplicationStatus({
         id: selectedApplication.id,
         old_status: selectedApplication.status,
         new_status: selectedStatus,
-        note: note,
       });
 
-      // Refresh applications list
-      const data = await API.getAllThesisApplications();
-      setThesisApplications(data);
-
+      setStatusChanged(true);
       handleCloseModal();
     } catch (error) {
       console.error('Error updating status:', error);
@@ -114,7 +108,7 @@ export default function Test() {
           <></>
         ) : (
           thesisApplications.map(application => (
-            <Card key={application.id} className="mb-3 roundCard">
+            <Card key={application.id} className="mb-3 roundCard py-2">
               <Card.Header className="border-0 d-flex justify-content-between align-items-center">
                 <div>
                   <h5 className="mb-1 thesis-topic">
@@ -204,22 +198,6 @@ export default function Test() {
             Stai per cambiare lo stato della candidatura <strong>#{selectedApplication?.id}</strong> in:{' '}
             <strong>{getStatusLabel(selectedStatus)}</strong>
           </p>
-          <Form.Group>
-            <Form.Label>
-              <i className="fa-solid fa-comment me-2" />
-              Nota (opzionale)
-            </Form.Label>
-            <Form.Control
-              as="textarea"
-              rows={3}
-              placeholder="Inserisci un commento o motivazione..."
-              value={note}
-              onChange={e => setNote(e.target.value)}
-              maxLength={255}
-              className="textarea-themed"
-            />
-            <Form.Text style={{ color: 'var(--text-muted)' }}>{note.length}/255 caratteri</Form.Text>
-          </Form.Group>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleCloseModal}>

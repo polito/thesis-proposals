@@ -41,9 +41,8 @@
   width: 24px;
   height: 24px;
   border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: grid;
+  place-items: center;
   position: relative;
   transition: all 0.3s ease;
 }
@@ -170,6 +169,8 @@
 }
 
 .progress-step-circle i {
-  font-size: 0.7rem;
   color: inherit;
+  display: inline-flex;
+  line-height: 1;
+  position: absolute;
 }

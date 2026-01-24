@@ -5,9 +5,9 @@ import { FaChevronLeft } from 'react-icons/fa6';
 
 import PropTypes from 'prop-types';
 
-export default function CustomHeader({ title, subtitle }) {
+export default function CustomHeader({ title, subtitle, action }) {
   return (
-    <div style={{ alignItems: 'center', display: 'flex' }}>
+    <div style={{ alignItems: 'center', display: 'flex', marginBottom: '1rem', justifyContent: 'space-between' }}>
       <Stack direction="horizontal" gap={3} className="align-items-center">
         <Button
           variant="light"
@@ -15,14 +15,15 @@ export default function CustomHeader({ title, subtitle }) {
           style={{
             border: '1px solid #dee2e6',
             borderRadius: '6px',
+            width: '30px',
+            height: '30px',
           }}
-          onClick={() => window.history.back()}
+          onClick={action}
         >
           <FaChevronLeft size={20} color="var(--gray-700)" />
         </Button>
 
         <Stack gap={0}>
-          {/* Titolo Corso */}
           <div style={{ color: 'var(--text)', fontSize: 'var(--font-size-xl)', fontWeight: 'var(--font-weight-bold)' }}>
             {title}
           </div>
@@ -39,6 +40,7 @@ export default function CustomHeader({ title, subtitle }) {
 }
 
 CustomHeader.propTypes = {
-  title: PropTypes.object.isRequired,
+  title: PropTypes.string.isRequired,
   subtitle: PropTypes.string,
+  action: PropTypes.func.isRequired,
 };

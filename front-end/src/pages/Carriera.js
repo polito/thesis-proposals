@@ -47,7 +47,7 @@ export default function Carriera() {
             icon={<i className="fa-solid fa-lightbulb-exclamation-on fa-lg pe-2" />}
             service={t('carriera.proposte_di_tesi.title')}
             description={t('carriera.proposte_di_tesi.section_description')}
-            servicePath={'/carriera/proposte_di_tesi'}
+            servicePath={'/carriera/tesi/proposte_di_tesi'}
           />
           <BaseCard
             icon={<i className="fa-solid fa-file-circle-plus fa-lg pe-2" />}

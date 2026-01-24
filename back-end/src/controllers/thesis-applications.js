@@ -102,7 +102,7 @@ const createThesisApplication = async (req, res) => {
         thesis_application_id: newApplication.id,
         old_status: null,
         new_status: newApplication.status || 'pending',
-        change_date: newApplication.submission_date,
+        change_date: newApplication.submission_date.toISOString(),
       },
       { transaction: t },
     );
@@ -340,18 +340,20 @@ const getAllThesisApplications = async (req, res) => {
 
 const cancelThesisApplication = async (req, res) => {
   try {
-    const { id, note } = req.body;
+    const { id } = req.body;
 
     const application = await ThesisApplication.findByPk(id);
     if (!application) {
       return res.status(404).json({ error: 'Thesis application not found' });
+    }
+    if (application.status !== 'pending') {
+      return res.status(400).json({ error: 'Only pending applications can be canceled' });
     }
 
     await ThesisApplicationStatusHistory.create({
       thesis_application_id: id,
       old_status: application.status,
       new_status: 'canceled',
-      note: note || null,
     });
     application.status = 'canceled';
     await application.save();
