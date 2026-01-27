@@ -1,6 +1,5 @@
 const { z } = require('zod');
 
-// Importiamo gli schemi originali (che si aspettano snake_case)
 const teacherOverviewSchema = require('./TeacherOverview');
 const companySchema = require('./Company');
 const thesisProposalMinimalSchema = require('./ThesisProposalMinimal');

@@ -6,13 +6,13 @@ const getCompanies = async (req, res) => {
     const companies = await Company.findAll({
       order: [['corporate_name', 'ASC']],
     });
-    res.json(
+    res.status(200).json(
       companies.map(company => {
         return companySchema.parse(company);
       }),
     );
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(400).json({ error: error.message });
   }
 };
 

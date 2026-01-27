@@ -17,6 +17,12 @@ const updateThesisApplicationStatus = async (req, res) => {
     }
     if (application.status === new_status) {
       return res.status(400).json({ error: 'New status must be different from the current status' });
+    } else if (
+      application.status === 'cancelled' ||
+      application.status === 'rejected' ||
+      application.status === 'approved'
+    ) {
+      return res.status(400).json({ error: 'Cannot update a closed application' });
     }
     const t = await sequelize.transaction();
     await ThesisApplicationStatusHistory.create(
@@ -29,7 +35,7 @@ const updateThesisApplicationStatus = async (req, res) => {
     );
     application.status = new_status;
     await application.save({ transaction: t });
-    if (new_status === 'approved') {
+    if (new_status !== 'approved') {
       const application_supervisors = await ThesisApplicationSupervisorCoSupervisor.findAll({
         where: { thesis_application_id: id },
       });
@@ -64,6 +70,8 @@ const updateThesisApplicationStatus = async (req, res) => {
         }
       }
       res.status(200).json(newThesis);
+    } else {
+      res.status(200).json(application);
     }
     await t.commit();
   } catch (error) {

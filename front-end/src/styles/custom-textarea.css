@@ -1,4 +1,4 @@
-.textarea-themed {
+.textarea-themed .textarea {
   border-radius: var(--border-radius);
   border: 1px solid var(--border);
   background-color: var(--background);
@@ -8,6 +8,7 @@
   padding: 0.75rem;
   width: 100%;
   transition: border-color 0.2s ease-in-out;
+  resize: none;
 }
 
 .textarea-themed:focus {

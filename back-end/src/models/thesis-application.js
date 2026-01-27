@@ -44,7 +44,7 @@ module.exports = (sequelize, DataTypes) => {
         field: 'company_id',
       },
       status: {
-        type: DataTypes.ENUM('pending', 'approved', 'rejected', 'canceled'),
+        type: DataTypes.ENUM('pending', 'approved', 'rejected', 'cancelled'),
         allowNull: false,
       },
     },

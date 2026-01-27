@@ -42,7 +42,7 @@ moment.locale('it');
  *    - "PENDING"
  *    - "REJECTED"
  *    - "APPROVED"
- *    - "CANCELED"
+ *    - "cancelled"
  * @param {object|array<object>!string|array<string>} content - If available, populate the content of the badge. It could be a single object (with 'content' and 'id' attributes) or an array of objects, a single string or an array of strings.
  * If you provide an array, the component will automatically render a tag for every item.
  * @param {type} - Optional. It is used to specify if the badge is a 'reset' badge. If it is, the badge will be rendered as a button with a 'delete' icon at the end and will reset the filter when clicked.
@@ -322,7 +322,7 @@ export default function CustomBadge({ variant, content, type, filters, applyFilt
             return <i className="fa-regular fa-circle-xmark fa-lg" />;
           case 'approved':
             return <i className="fa-regular fa-circle-check fa-lg" />;
-          case 'canceled':
+          case 'cancelled':
             return <i className="fa-regular fa-circle-minus fa-lg" />;
           default:
             return <i className="fa-regular fa-circle-xmark fa-lg" />;
@@ -356,8 +356,8 @@ export default function CustomBadge({ variant, content, type, filters, applyFilt
             return t('carriera.tesi.thesis_progress.approved');
           case 'rejected':
             return t('carriera.tesi.thesis_progress.rejected');
-          case 'canceled':
-            return t('carriera.tesi.thesis_progress.canceled');
+          case 'cancelled':
+            return t('carriera.tesi.thesis_progress.cancelled');
           default:
             return t('carriera.proposta_di_tesi.badge_errato');
         }
@@ -459,7 +459,7 @@ const getApplicationStatusBadgeType = content => {
       return 'error';
     case 'approved':
       return 'success';
-    case 'canceled':
+    case 'cancelled':
       return 'error';
   }
 };

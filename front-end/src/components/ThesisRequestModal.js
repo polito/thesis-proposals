@@ -88,11 +88,28 @@ export default function ThesisRequestModal(props) {
 
   return (
     <Modal className="modal-xxl" show={show} onHide={() => setShow(false)} centered>
-      <Modal.Header closeButton>
+      <Modal.Header>
         <Modal.Title>
           <i className="fa-regular fa-file-lines fa-lg pe-2" />
           {t('carriera.richiesta_tesi.title')}
         </Modal.Title>
+        <div className="ms-auto">
+          <Button
+            className={`btn-${appliedTheme}`}
+            onClick={() => {
+              setTopic('');
+              setSupervisor(null);
+              setCoSupervisors([]);
+              setCompany(null);
+              setErrors({
+                topic: false,
+                supervisor: false,
+              });
+            }}
+          >
+            <i className="fa-solid fa-arrow-rotate-left fa-lg me-1" /> {t('carriera.richiesta_tesi.reset_form')}
+          </Button>
+        </div>
       </Modal.Header>
       <Modal.Body>
         <Form>
@@ -100,7 +117,7 @@ export default function ThesisRequestModal(props) {
             <Form.Label>{t('carriera.richiesta_tesi.topic')}</Form.Label>
             <Form.Control
               as="textarea"
-              rows={4}
+              rows={5}
               className={`form-control textarea-themed ${errors.topic ? 'is-invalid' : ''}`}
               value={topic}
               onChange={e => setTopic(e.target.value)}
@@ -137,6 +154,7 @@ export default function ThesisRequestModal(props) {
               setSelected={setSupervisor}
               isMulti={false}
               placeholder={t('carriera.richiesta_tesi.select_supervisor_placeholder')}
+              className={errors.supervisor ? 'is-invalid' : ''}
             />
             {errors.supervisor && (
               <div className="text-danger mt-2">
@@ -162,7 +180,6 @@ export default function ThesisRequestModal(props) {
               placeholder={t('carriera.richiesta_tesi.select_co_supervisors_placeholder')}
             />
           </Form.Group>
-
           <Form.Group className="mb-3" controlId="companySelect">
             <Form.Label>
               <i className="fa-regular fa-building fa-lg pe-2" />

@@ -73,7 +73,7 @@ export default function Test() {
         return 'success';
       case 'rejected':
         return 'danger';
-      case 'canceled':
+      case 'cancelled':
         return 'secondary';
       default:
         return 'info';
@@ -88,7 +88,7 @@ export default function Test() {
         return 'Approvata';
       case 'rejected':
         return 'Rifiutata';
-      case 'canceled':
+      case 'cancelled':
         return 'Cancellata';
       default:
         return status;
@@ -171,8 +171,8 @@ export default function Test() {
                       </Button>
                       <Button
                         variant="outline-secondary"
-                        disabled={application.status === 'canceled'}
-                        onClick={() => openStatusChangeModal(application, 'canceled')}
+                        disabled={application.status === 'cancelled'}
+                        onClick={() => openStatusChangeModal(application, 'cancelled')}
                       >
                         <i className="fa-solid fa-ban me-1" />
                         Cancel

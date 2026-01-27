@@ -17,12 +17,12 @@ module.exports = (sequelize, DataTypes) => {
         field: 'thesis_application_id',
       },
       old_status: {
-        type: DataTypes.ENUM('pending', 'approved', 'rejected', 'canceled'),
+        type: DataTypes.ENUM('pending', 'approved', 'rejected', 'cancelled'),
         allowNull: true,
         field: 'old_status',
       },
       new_status: {
-        type: DataTypes.ENUM('pending', 'approved', 'rejected', 'canceled'),
+        type: DataTypes.ENUM('pending', 'approved', 'rejected', 'cancelled'),
         allowNull: false,
         field: 'new_status',
       },

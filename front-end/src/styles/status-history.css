@@ -58,7 +58,7 @@
   color: var(--red-700);
 }
 
-.status-history-icon.status-canceled {
+.status-history-icon.status-cancelled {
   background-color: var(--red-200);
   color: var(--red-700);
 }

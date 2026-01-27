@@ -1,11 +1,12 @@
-const { QueryTypes } = require('sequelize');
 const {
   sequelize,
   Thesis,
   ThesisSupervisorCoSupervisor,
   Teacher,
   Student,
+  LoggedStudent,
   ThesisApplicationStatusHistory,
+  Company,
 } = require('../models');
 const thesisSchema = require('../schemas/Thesis');
 const toSnakeCase = require('../utils/snakeCase');
@@ -15,20 +16,15 @@ const toSnakeCase = require('../utils/snakeCase');
 // ==========================================
 const getLoggedStudentThesis = async (req, res) => {
   try {
-    const loggedStudent = await sequelize.query(
-      `
-            SELECT 
-              s.*
-            FROM student s
-            INNER JOIN logged_student ls ON s.id = ls.student_id
-            LIMIT 1
-            `,
-      { type: QueryTypes.SELECT },
-    );
+    const logged = await LoggedStudent.findOne();
+    if (!logged) {
+      return res.status(401).json({ error: 'No logged-in student found' });
+    }
+    const loggedStudent = await Student.findByPk(logged.student_id);
 
     const thesisData = await Thesis.findOne({
       where: {
-        student_id: loggedStudent[0].id,
+        student_id: loggedStudent.id,
       },
     });
 
@@ -65,7 +61,6 @@ const getLoggedStudentThesis = async (req, res) => {
     // Fetch company if exists
     let companyData = null;
     if (thesisData.company_id) {
-      const { Company } = require('../models');
       companyData = await Company.findByPk(thesisData.company_id);
     }
 
@@ -74,7 +69,7 @@ const getLoggedStudentThesis = async (req, res) => {
     });
     const statusHistoryData = statusHistoryRecords.map(r => r.toJSON());
 
-    const responsePayload = {
+    const responsePayload = toSnakeCase({
       id: thesisData.id,
       topic: thesisData.topic,
       student: studentData ? studentData.toJSON() : null,
@@ -90,7 +85,7 @@ const getLoggedStudentThesis = async (req, res) => {
       thesis_conclusion_confirmation_date: thesisData.thesis_conclusion_confirmation_date
         ? thesisData.thesis_conclusion_confirmation_date.toISOString()
         : null,
-    };
+    });
 
     const thesisResponse = thesisSchema.parse(responsePayload);
     return res.status(200).json(thesisResponse);
@@ -103,16 +98,11 @@ const getLoggedStudentThesis = async (req, res) => {
 
 const createStudentThesis = async (req, res) => {
   try {
-    const loggedStudent = await sequelize.query(
-      `
-            SELECT 
-              s.*
-            FROM student s
-            INNER JOIN logged_student ls ON s.id = ls.student_id
-            LIMIT 1
-            `,
-      { type: QueryTypes.SELECT },
-    );
+    const logged = await LoggedStudent.findOne();
+    if (!logged) {
+      return res.status(401).json({ error: 'No logged-in student found' });
+    }
+    const loggedStudent = await Student.findByPk(logged.student_id);
 
     const thesis_data = toSnakeCase(req.body);
     console.log('Creating thesis with data: ' + JSON.stringify(thesis_data, null, 2));
@@ -121,7 +111,7 @@ const createStudentThesis = async (req, res) => {
 
     const newThesis = await Thesis.create(
       {
-        student_id: loggedStudent[0].id,
+        student_id: loggedStudent.id,
         company_id: thesis_data.company ? thesis_data.company.id : null,
         topic: thesis_data.topic,
         thesis_application_id: thesis_data.thesis_application_id,

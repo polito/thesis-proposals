@@ -44,11 +44,11 @@ export default function Timeline({ activeStep, statusHistory }) {
           label: t('carriera.tesi.thesis_progress.rejected'),
           description: t('carriera.tesi.thesis_progress.rejected_description'),
         };
-      case 'canceled':
+      case 'cancelled':
         return {
-          key: 'canceled',
-          label: t('carriera.tesi.thesis_progress.canceled'),
-          description: t('carriera.tesi.thesis_progress.canceled_description'),
+          key: 'cancelled',
+          label: t('carriera.tesi.thesis_progress.cancelled'),
+          description: t('carriera.tesi.thesis_progress.cancelled_description'),
         };
       default:
         return {
@@ -106,7 +106,7 @@ export default function Timeline({ activeStep, statusHistory }) {
     switch (key) {
       case 'pending':
       case 'rejected':
-      case 'canceled':
+      case 'cancelled':
       case 'approved':
         historyEntry = statusHistory ? getHistoryForStatus(key) : null;
         circleClass = isActive ? key : 'inactive';
@@ -124,7 +124,7 @@ export default function Timeline({ activeStep, statusHistory }) {
           <div className={`progress-step-circle ${circleClass}`}>
             {isActive && key === 'approved' && <i className="fa-solid fa-check align-vertical-center" />}
             {isActive && key === 'rejected' && <i className="fa-solid fa-xmark" />}
-            {isActive && key === 'canceled' && <i className="fa-solid fa-ban" />}
+            {isActive && key === 'cancelled' && <i className="fa-solid fa-ban" />}
           </div>
         </div>
         <div className="progress-step-content">
@@ -151,7 +151,7 @@ export default function Timeline({ activeStep, statusHistory }) {
                     }}
                   >
                     <i className="fa-solid fa-comment me-2" />
-                    {key !== 'canceled'
+                    {key !== 'cancelled'
                       ? expandedNote === key
                         ? t('carriera.tesi.thesis_progress.hide_supervisor_note')
                         : t('carriera.tesi.thesis_progress.show_supervisor_note')
@@ -194,7 +194,7 @@ Timeline.propTypes = {
     'pending',
     'approved',
     'rejected',
-    'canceled',
+    'cancelled',
     'ongoing',
     'conclusion_request',
     'almalaurea',

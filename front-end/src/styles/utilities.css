@@ -381,6 +381,21 @@ body {
   }
 }
 
+@media (max-width: 991px) {
+  .modal-xxl .modal-content {
+    max-width: 90vw;
+    min-width: unset;
+    margin: auto;
+  }
+}
+
+@media (max-height: 700px) {
+  .modal-xxl .modal-content {
+    max-height: 90vh;
+    overflow: auto;
+  }
+}
+
 /* Chrome, Edge and Safari */
 *::-webkit-scrollbar {
   height: 6px;

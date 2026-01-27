@@ -65,7 +65,7 @@
   color: var(--red-700);
 }
 
-.progress-step-circle.canceled {
+.progress-step-circle.cancelled {
   border: 2px solid var(--red-700);
   background-color: var(--red-200);
   color: var(--red-700);

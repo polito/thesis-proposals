@@ -16,7 +16,7 @@ export default function PillButtonGroup({ label, options, active }) {
             key={option.value}
             ref={option.ref}
             variant="none"
-            className={`pill-button ${active === option.value ? 'active' : ''}`}
+            className={`pill-button-light ${active === option.value ? 'active' : ''}`}
             onClick={() => option.onClick(option.value)}
           >
             {option.label}

@@ -19,7 +19,9 @@ export default function Thesis(props) {
   const [isLoading, setIsLoading] = useState(true);
   const supervisors = [data.supervisor, ...data.coSupervisors];
   const activeStep = thesis ? thesis.thesisStatus : thesisApplication.status;
-  const statusHistory = thesis ? thesis.applicationStatusHistory : thesisApplication.statusHistory;
+  const [applicationStatusHistory, setApplicationStatusHistory] = useState(
+    thesisApplication ? thesisApplication.statusHistory : [],
+  );
   const modalTitle = thesis ? 'carriera.tesi.modal_cancel.title' : 'carriera.tesi.cancel_application';
   const modalBody = thesis ? 'carriera.tesi.modal_cancel.body' : 'carriera.tesi.cancel_application_content';
   const modalConfirmText = thesis ? 'carriera.tesi.modal_cancel.confirm_text' : 'carriera.tesi.confirm_cancel';
@@ -33,11 +35,11 @@ export default function Thesis(props) {
     } else if (thesisApplication) {
       API.getStatusHistoryApplication(thesisApplication.id)
         .then(history => {
-          data.applicationStatusHistory = history;
+          setApplicationStatusHistory(history);
         })
         .catch(error => {
           console.error('Error fetching thesis application status history:', error);
-          data.applicationStatusHistory = [];
+          setApplicationStatusHistory([]);
         })
         .finally(() => {
           setIsLoading(false);
@@ -66,7 +68,7 @@ export default function Thesis(props) {
       <div className="proposals-container">
         <Row className="mb-3">
           <Col md={4} lg={4}>
-            <Timeline activeStep={activeStep} statusHistory={statusHistory} />
+            <Timeline activeStep={activeStep} statusHistory={applicationStatusHistory} />
           </Col>
           <Col md={8} lg={8}>
             <Card className="mb-3 roundCard py-2 ">
