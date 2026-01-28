@@ -18,7 +18,8 @@ import PageNotFound from './pages/PageNotFound';
 import Servizi from './pages/Servizi';
 import LaureaEdEsameFinale from './pages/carriera/LaureaEdEsameFinale';
 import PropostaDiTesi from './pages/carriera/PropostaDiTesi';
-import ProposteDiTesi from './pages/carriera/ProposteDiTesi';
+import Tesi from './pages/carriera/Tesi';
+import Test from './pages/servizi/Test';
 import { getSystemTheme, scrollTop } from './utils/utils';
 
 export const FavoritesContext = createContext(null);
@@ -108,13 +109,15 @@ function App() {
                     <Route path="/home" element={<Homepage />} />
                     <Route path="/didattica" element={<Didattica />} />
                     <Route path="/carriera" element={<Carriera />} />
-                    <Route path="/carriera/proposte_di_tesi" element={<ProposteDiTesi />} />
-                    <Route path="/carriera/proposte_di_tesi/:id" element={<PropostaDiTesi />} />
                     <Route path="/carriera/laurea_ed_esame_finale" element={<LaureaEdEsameFinale />} />
                     <Route path="/opportunita" element={<Opportunita />} />
                     <Route path="/servizi" element={<Servizi />} />
                     <Route path="/help" element={<Help />} />
                     <Route path="*" element={<PageNotFound />} />
+                    <Route path="/servizi/test" element={<Test />} />
+                    <Route path="/carriera/tesi" element={<Tesi initialActiveTab="thesis" />} />
+                    <Route path="/carriera/tesi/proposte_di_tesi" element={<Tesi initialActiveTab="proposals" />} />
+                    <Route path="/carriera/tesi/proposta_di_tesi/:id" element={<PropostaDiTesi />} />
                   </Routes>
                   <FloatingButton />
                 </Col>

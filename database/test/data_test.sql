@@ -19,6 +19,16 @@ VALUES
     ("CL017", "Collegio di Ingegneria Elettrica ed Energetica"),
     ("CL018", "Collegio di Ingegneria Civile ed Edile");
 
+INSERT INTO
+    company (id, corporate_name)
+VALUES
+    (1, "Tech Solutions S.r.l."),
+    (2, "Innovatech S.p.A."),
+    (3, "Green Energy Corp."),
+    (4, "AutoMotive Innovations"),
+    (5, "BioHealth Technologies");
+
+
 
 -- ------------------------------------------------------------
 -- ↓ degree_programme_container table ↓
@@ -3030,7 +3040,7 @@ VALUES
         NULL,
         NULL,
         "2024-11-11",
-        "2025-11-11",
+        "2027-11-11",
         1,
         0,
         "CL003",
@@ -3050,7 +3060,7 @@ VALUES
         NULL,
         "Domenico De Guglielmo",
         "2024-09-05",
-        "2025-09-05",
+        "2027-09-05",
         1,
         0,
         "CL003",
@@ -3069,7 +3079,7 @@ VALUES
         NULL,
         NULL,
         NULL,
-        "2026-01-09",
+        "2028-01-09",
         "2024-01-09",
         0,
         0,
@@ -3096,7 +3106,7 @@ VALUES
         NULL,
         NULL,
         "2024-02-26",
-        "2026-02-26",
+        "2028-02-26",
         0,
         1,
         "CL003",
@@ -3116,7 +3126,7 @@ VALUES
         NULL,
         NULL,
         "2024-10-16",
-        "2025-10-16",
+        "2027-10-16",
         1,
         0,
         "CL003",
@@ -3136,7 +3146,7 @@ VALUES
         NULL,
         NULL,
         "2024-05-31",
-        "2025-10-31",
+        "2027-10-31",
         1,
         0,
         "CL003",
@@ -3182,7 +3192,7 @@ VALUES
         NULL,
         NULL,
         "2024-09-03",
-        "2025-09-03",
+        "2027-09-03",
         0, /* Discrepancy with real value */
         0,
         "CL003",
@@ -3202,7 +3212,7 @@ VALUES
         NULL,
         NULL,
         "2024-09-30",
-        "2025-09-30",
+        "2027-09-30",
         0,
         0,
         "CL003",
@@ -3292,3 +3302,170 @@ INSERT INTO
     logged_student (student_id)
 VALUES
     (320213);
+
+-- ------------------------------------------------------------
+-- ↓ thesis_application table ↓
+-- ------------------------------------------------------------
+INSERT INTO
+    thesis_application (
+        id,
+        topic,
+        student_id,
+        thesis_proposal_id,
+        company_id,
+        submission_date,
+        status
+    )
+VALUES
+    (
+        1,
+        "Valutazione Critica delle Capacità di Generazione del Codice da Parte di LLM in Contesto di Istruzione",
+        320213,
+        13275,
+        NULL,
+        "2024-11-20",
+        "pending"
+    ),
+    (
+        2,
+        "Sviluppo di un simulatore di Home Automation",
+        314796,
+        13363,
+        2,
+        "2024-10-15",
+        "approved"
+    ),
+    (
+        3,
+        "IA Generativa per la Creazione di OpenScenario e OpenDrive da Serie di Immagini del Traffico",
+        318952,
+        13470,
+        NULL,
+        "2024-12-01",
+        "rejected"
+    );
+-- ------------------------------------------------------------
+-- ↓ thesis_application_supervisor_cosupervisor table ↓
+-- ------------------------------------------------------------
+INSERT INTO
+    thesis_application_supervisor_cosupervisor (
+        thesis_application_id,
+        teacher_id,
+        is_supervisor
+    )
+VALUES
+    (
+        1,
+        3019,
+        1
+    ),
+    (
+        1,
+        38485,
+        0
+    ),
+    (
+        2,
+        23270,
+        1
+    ),
+    (
+        2,
+        3019,
+        0
+    ),
+    (
+        3,
+        38485,
+        1
+    ),
+    (
+        3,
+        1921,
+        0
+    );
+
+-- ------------------------------------------------------------
+-- ↓ thesis_application_status_history table ↓
+-- ------------------------------------------------------------
+INSERT INTO
+    thesis_application_status_history (
+        thesis_application_id,
+        old_status,
+        new_status,
+        change_date
+    )
+VALUES
+    (
+        1,
+        NULL,
+        'pending',
+        "2024-11-20T10:00:00"
+    ),
+    (
+        2,
+        NULL,
+        'pending',
+        "2024-10-15T09:30:00"
+    ),
+    (
+        2,
+        'pending',
+        'approved',
+        "2024-11-10T15:45:00"
+    ),
+    (
+        3,
+        NULL,
+        'pending',
+        "2024-12-01T08:15:00"
+    ),
+    (
+        3,
+        'pending',
+        'rejected',
+        "2024-12-10T14:00:00"
+    );
+
+-- ------------------------------------------------------------
+-- ↓ thesis table ↓
+-- ------------------------------------------------------------
+INSERT INTO
+    thesis (
+        id,
+        topic,
+        thesis_application_id,
+        student_id,
+        company_id,    
+        thesis_start_date
+    )
+VALUES
+    (
+        1,
+        "Valutazione Critica delle Capacità di Generazione del Codice da Parte di LLM in Contesto di Istruzione",
+        1,
+        320213,
+        NULL,
+        "2025-02-01"
+    );
+
+-- ------------------------------------------------------------
+-- ↓ thesis_supervisor_cosupervisor table ↓
+-- ------------------------------------------------------------
+INSERT INTO
+    thesis_supervisor_cosupervisor (
+        thesis_id,
+        teacher_id,
+        is_supervisor
+    )
+VALUES
+    (
+        1,
+        3019,
+        1
+    ),
+    (
+        1,
+        38485,
+        0
+    );

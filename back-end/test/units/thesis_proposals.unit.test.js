@@ -20,6 +20,9 @@ jest.mock('../../src/models', () => ({
     findAndCountAll: jest.fn(),
     findByPk: jest.fn(),
   },
+  ThesisProposalDegree: {
+    findAll: jest.fn(),
+  },
   Type: {
     findAll: jest.fn(),
   },
